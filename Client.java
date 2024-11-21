@@ -3,6 +3,7 @@ import java.util.Scanner;
 
 public class Client {
     static Connection c;
+    static boolean active = true;
 
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
@@ -30,6 +31,7 @@ public class Client {
         }
 
         try {
+            active = false;
             c.close();
         } catch (IOException e) {
             System.out.println("Errore nella chiusura della connessione.");
@@ -39,11 +41,11 @@ public class Client {
     private static class ClientThread extends Thread {
         @Override
         public void run() {
-            while(true) {
+            while(Client.active) {
                 try {
                     c.recv();
                 } catch (IOException e) {
-                    System.out.println("Errore nella ricezione del messaggio.");
+                    if (Client.active) System.out.println("Errore nella ricezione del messaggio.");
                 }
             }
         }
