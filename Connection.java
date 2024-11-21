@@ -24,11 +24,11 @@ public class Connection {
         send = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
     }
 
-    private void send(String payload) {
+    public void send(String payload) {
         send.println(payload);
     }
 
-    private String recv() throws IOException {
+    public String recv() throws IOException {
         return recv.readLine();
     }
 
