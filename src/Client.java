@@ -1,6 +1,8 @@
 import java.io.IOException;
 import java.util.Scanner;
 
+import protocol.Connection;
+
 public class Client {
     static Connection c;
     static boolean active = true;

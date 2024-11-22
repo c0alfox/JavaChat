@@ -1,3 +1,5 @@
+package protocol;
+
 import java.util.HashMap;
 
 public final class DataMessageRunner extends MessageRunner {

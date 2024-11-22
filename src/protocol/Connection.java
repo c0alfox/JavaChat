@@ -1,3 +1,5 @@
+package protocol;
+
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -5,9 +7,9 @@ import java.nio.charset.StandardCharsets;
 public class Connection {
     public static final int PORT = 16384;
 
-    Socket socket;
-    BufferedReader recv;
-    PrintWriter send;
+    private Socket socket;
+    private BufferedReader recv;
+    private PrintWriter send;
 
     public Connection(String target) throws IOException {
         socket = new Socket(target, PORT);
@@ -22,6 +24,10 @@ public class Connection {
     private void setStreams() throws IOException {
         recv = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         send = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
+    }
+
+    public Socket getSocket() {
+        return socket;
     }
 
     public void send(String payload) {

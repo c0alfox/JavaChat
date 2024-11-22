@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import protocol.Connection;
 
 public class Server {
     static Connection c;
@@ -30,12 +31,12 @@ public class Server {
 
         ServerThread(Connection c) {
             this.c = c;
-            System.out.println(c.socket.getInetAddress().getHostAddress() + " - Connesso");
+            System.out.println(c.getSocket().getInetAddress().getHostAddress() + " - Connesso");
         }
 
         ServerThread(Socket s) throws IOException {
             c = new Connection(s);
-            System.out.println(c.socket.getInetAddress().getHostAddress() + " - Connesso");
+            System.out.println(c.getSocket().getInetAddress().getHostAddress() + " - Connesso");
         }
 
         @Override
@@ -47,14 +48,14 @@ public class Server {
                     String req = c.recv();
 
                     if (req == null) {
-                        System.out.println(c.socket.getInetAddress().getHostAddress() + " - Connessione terminata");
+                        System.out.println(c.getSocket().getInetAddress().getHostAddress() + " - Connessione terminata");
                         c.close();
                         return;
                     }
 
-                    System.out.println(c.socket.getInetAddress().getHostAddress() + " - " + req);
+                    System.out.println(c.getSocket().getInetAddress().getHostAddress() + " - " + req);
                 } catch (IOException e) {
-                    System.out.println(c.socket.getInetAddress().getHostAddress() + " - Errore in input");
+                    System.out.println(c.getSocket().getInetAddress().getHostAddress() + " - Errore in input");
                 }
             }
         }
