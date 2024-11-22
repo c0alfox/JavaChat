@@ -28,3 +28,8 @@ Sono comandi validi:
 - `/channels`, mostra la lista dei canali aperti;
 - `/mychannel`, ritorna il nome del canale attuale;
 - `/users`, ritorna la lista di utenti collegati al canale attuale.
+
+L'utente più anziano di un canale è sempre l'amministratore. L'amministratore ha accesso ai seguenti comandi:
+- `/ban <nome utente>`, l’utente specificato sarà bannato: continua a restare nel cannale, ma non potrà scrivere nulla. Se un client bannato prova a scrivere qualcosa, il server lo informa che è bannato. L’amministratore non deve potersi bananare da solo;
+- `/unban <nome utente>`, l’utente specificato potrà riprendere a inviare messaggi dentro la chat;
+- `/banlist`, visualizza la lista degli utenti bannati.
