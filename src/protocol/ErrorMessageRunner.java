@@ -6,7 +6,12 @@ public final class ErrorMessageRunner extends MessageRunner {
     }
 
     @Override
-    public void run() {
+    public void client() {
+
+    }
+
+    @Override
+    public void server() {
 
     }
 }

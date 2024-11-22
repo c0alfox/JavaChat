@@ -79,5 +79,7 @@ public sealed abstract class MessageRunner permits CommandMessageRunner, DataMes
         }
     }
 
-    public abstract void run();
+    public abstract void client();
+
+    public abstract void server();
 }

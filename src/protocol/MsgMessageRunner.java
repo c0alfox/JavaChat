@@ -5,6 +5,12 @@ public final class MsgMessageRunner extends MessageRunner {
     }
 
     @Override
-    public void run() {
+    public void client() {
+
+    }
+
+    @Override
+    public void server() {
+
     }
 }
