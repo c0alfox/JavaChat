@@ -7,11 +7,6 @@ public final class DataMessageRunner extends MessageRunner {
     }
 
     @Override
-    public void client() {
-
-    }
-
-    @Override
     public void server() {
 
     }

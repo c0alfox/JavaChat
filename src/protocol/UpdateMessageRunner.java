@@ -5,11 +5,6 @@ public final class UpdateMessageRunner extends MessageRunner {
     }
 
     @Override
-    public void client() {
-
-    }
-
-    @Override
     public void server() {
 
     }

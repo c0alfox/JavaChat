@@ -8,9 +8,4 @@ public final class CommandMessageRunner extends MessageRunner {
     public void client() {
 
     }
-
-    @Override
-    public void server() {
-
-    }
 }

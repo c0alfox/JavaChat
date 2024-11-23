@@ -1,9 +1,11 @@
 package protocol;
 
+import java.lang.invoke.WrongMethodTypeException;
 import java.util.HashMap;
 
 public sealed abstract class MessageRunner permits CommandMessageRunner, DataMessageRunner, ErrorMessageRunner, JoinMessageRunner, LeaveMessageRunner, MsgMessageRunner, SuggestionMessageRunner, UpdateMessageRunner {
     public static final class IllformedMessageException extends Exception {}
+    public static final class WrongEnvironmentException extends Exception {}
 
     public static MessageRunner create(String msg) throws IllformedMessageException {
         if (msg.isEmpty()) {
@@ -79,7 +81,11 @@ public sealed abstract class MessageRunner permits CommandMessageRunner, DataMes
         }
     }
 
-    public abstract void client();
+    public void client() throws WrongEnvironmentException {
+        throw new WrongEnvironmentException();
+    }
 
-    public abstract void server();
+    public void server() throws WrongEnvironmentException {
+        throw new WrongMethodTypeException();
+    }
 }

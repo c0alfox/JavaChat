@@ -5,11 +5,6 @@ public final class LeaveMessageRunner extends MessageRunner {
     }
 
     @Override
-    public void client() {
-
-    }
-
-    @Override
     public void server() {
 
     }

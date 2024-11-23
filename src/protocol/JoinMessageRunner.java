@@ -5,11 +5,6 @@ public final class JoinMessageRunner extends MessageRunner {
     }
 
     @Override
-    public void client() {
-
-    }
-
-    @Override
     public void server() {
 
     }
