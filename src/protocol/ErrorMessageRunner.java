@@ -6,7 +6,7 @@ public final class ErrorMessageRunner extends MessageRunner {
     }
 
     @Override
-    public void server() {
-
+    protected String serverNoId() {
+        return "";
     }
 }

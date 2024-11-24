@@ -5,7 +5,7 @@ public final class JoinMessageRunner extends MessageRunner {
     }
 
     @Override
-    public void server() {
-
+    protected String serverNoId() {
+        return "";
     }
 }

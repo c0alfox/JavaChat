@@ -1,34 +1,35 @@
 package protocol;
 
-import java.lang.invoke.WrongMethodTypeException;
 import java.util.HashMap;
 
 public sealed abstract class MessageRunner permits CommandMessageRunner, DataMessageRunner, ErrorMessageRunner, JoinMessageRunner, LeaveMessageRunner, MsgMessageRunner, SuggestionMessageRunner, UpdateMessageRunner {
+    private int id = 0;
+
     public static final class IllformedMessageException extends Exception {}
     public static final class WrongEnvironmentException extends Exception {}
 
-    public static MessageRunner create(String msg) throws IllformedMessageException {
-        if (msg.isEmpty()) {
+    public static MessageRunner create(String payload) throws IllformedMessageException {
+        if (payload.isEmpty()) {
             throw new IllformedMessageException();
         }
 
-        switch (msg.charAt(0)) {
+        switch (payload.charAt(0)) {
             case 'c':
-                return new CommandMessageRunner(msg.substring(1));
+                return new CommandMessageRunner(payload.substring(1));
 
             case 'm': {
-                int idx = msg.indexOf(' ');
+                int idx = payload.indexOf(' ');
                 if (idx < 0) {
                     throw new IllformedMessageException();
                 }
-                return new MsgMessageRunner(msg.substring(1, idx), msg.substring(idx + 1));
+                return new MsgMessageRunner(payload.substring(1, idx), payload.substring(idx + 1));
             }
 
             case 's':
                 return new SuggestionMessageRunner();
 
             case 'j': {
-                String[] words = msg.substring(1).split(" ");
+                String[] words = payload.substring(1).split(" ");
                 if (words.length != 2) {
                     throw new IllformedMessageException();
                 }
@@ -37,7 +38,7 @@ public sealed abstract class MessageRunner permits CommandMessageRunner, DataMes
             }
 
             case 'l': {
-                String[] words = msg.substring(1).split(" ");
+                String[] words = payload.substring(1).split(" ");
                 if (words.length != 1) {
                     throw new IllformedMessageException();
                 }
@@ -46,7 +47,7 @@ public sealed abstract class MessageRunner permits CommandMessageRunner, DataMes
             }
 
             case 'u': {
-                String[] words = msg.substring(1).split(" ");
+                String[] words = payload.substring(1).split(" ");
                 if (words.length != 2) {
                     throw new IllformedMessageException();
                 }
@@ -55,7 +56,7 @@ public sealed abstract class MessageRunner permits CommandMessageRunner, DataMes
             }
 
             case 'd': {
-                String[] words = msg.substring(1).split(" ");
+                String[] words = payload.substring(1).split(" ");
                 if (words.length < 1) {
                     throw new IllformedMessageException();
                 }
@@ -74,18 +75,32 @@ public sealed abstract class MessageRunner permits CommandMessageRunner, DataMes
             }
 
             case 'e':
-                return new ErrorMessageRunner(msg.substring(1));
+                return new ErrorMessageRunner(payload.substring(1));
 
             default:
                 throw new IllformedMessageException();
         }
     }
 
+    public static MessageRunner create(String payload, int id) throws IllformedMessageException {
+        MessageRunner ret = MessageRunner.create(payload);
+        ret.id = id;
+        return ret;
+    }
+
     public void client() throws WrongEnvironmentException {
         throw new WrongEnvironmentException();
     }
 
-    public void server() throws WrongEnvironmentException {
-        throw new WrongMethodTypeException();
+    protected String serverNoId() throws WrongEnvironmentException {
+        throw new WrongEnvironmentException();
+    }
+
+    public String server() throws WrongEnvironmentException {
+        if (id == 0) {
+            serverNoId();
+        }
+
+        return id + serverNoId();
     }
 }

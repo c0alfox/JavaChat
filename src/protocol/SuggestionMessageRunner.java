@@ -7,7 +7,7 @@ public final class SuggestionMessageRunner extends MessageRunner {
     }
 
     @Override
-    public void server() {
-
+    protected String serverNoId() {
+        return "";
     }
 }
