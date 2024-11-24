@@ -1,3 +1,5 @@
+package client;
+
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -10,17 +12,7 @@ public class Client {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
 
-        while (c == null) {
-            System.out.print("Inserisci l'indirizzo del server: ");
-            String host = s.nextLine().strip();
-            try {
-                c = new Connection(host);
-            } catch (IOException e) {
-                System.out.println("Errore nella connessione al server.");
-            }
-        }
-
-        new ClientThread().start();
+        new ClientUI();
 
         while (true) {
             String payload = s.nextLine();
@@ -31,13 +23,21 @@ public class Client {
 
             c.send(payload);
         }
+    }
 
-        try {
-            active = false;
-            c.close();
-        } catch (IOException e) {
-            System.out.println("Errore nella chiusura della connessione.");
-        }
+    public static void connect(String target) throws IOException {
+        c = new Connection(target);
+        new ClientThread().start();
+    }
+
+    public static void send(String payload) {
+        c.send(payload);
+        System.out.println("> " + payload);
+    }
+
+    public static void close() throws IOException {
+        active = false;
+        c.close();
     }
 
     private static class ClientThread extends Thread {
@@ -45,7 +45,8 @@ public class Client {
         public void run() {
             while(Client.active) {
                 try {
-                    c.recv();
+                    String s = c.recv();
+                    System.out.println("< " + s);
                 } catch (IOException e) {
                     if (Client.active) System.out.println("Errore nella ricezione del messaggio.");
                 }
