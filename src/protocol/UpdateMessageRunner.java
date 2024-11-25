@@ -10,8 +10,8 @@ public final class UpdateMessageRunner extends MessageRunner {
     }
 
     @Override
-    public void server() {
-
+    protected String serverNoId() {
+        return "";
     }
 
     @Override

@@ -11,8 +11,8 @@ public final class DataMessageRunner extends MessageRunner {
     }
 
     @Override
-    public void server() {
-
+    protected String serverNoId() {
+        return "";
     }
 
     @Override
