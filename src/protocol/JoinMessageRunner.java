@@ -1,11 +1,21 @@
 package protocol;
 
 public final class JoinMessageRunner extends MessageRunner {
-    public JoinMessageRunner(String word, String word1) {
+    String uname;
+    String color;
+
+    public JoinMessageRunner(String uname, String color) {
+        this.uname = uname;
+        this.color = color;
     }
 
     @Override
     public void server() {
 
+    }
+
+    @Override
+    public String toString() {
+        return "j " + uname + " " + color;
     }
 }

@@ -1,7 +1,12 @@
 package protocol;
 
 public final class MsgMessageRunner extends MessageRunner {
-    public MsgMessageRunner(String substring, String substring1) {
+    String uname;
+    String msg;
+
+    public MsgMessageRunner(String uname, String msg) {
+        this.uname = uname;
+        this.msg = msg;
     }
 
     @Override
@@ -12,5 +17,10 @@ public final class MsgMessageRunner extends MessageRunner {
     @Override
     public void server() {
 
+    }
+
+    @Override
+    public String toString() {
+        return "m " + uname + " " + msg;
     }
 }
