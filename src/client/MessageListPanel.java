@@ -2,20 +2,32 @@ package client;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 
-public class MessageList extends JPanel {
-    private final JScrollPane component;
+public class MessageListPanel extends JPanel {
     private final DefaultTableModel tableModel;
     private final JTable table;
 
-    public MessageList() {
+    public MessageListPanel() {
+        // Imposto la tabella dei messaggi con la colonna dei messaggi che occupa la maggior parte dello schermo
         tableModel = new DefaultTableModel(0, 2);
+        table = new JTable(tableModel);
 
-        table = new JTable();
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        table.getColumnModel().getColumn(0).setPreferredWidth(100);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
 
-        component = new JScrollPane(table);
+        // Disabilito la selezione dei messaggi
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.setCellSelectionEnabled(false);
 
-        add(component);
+        // Disabilito l'intestazione della tabella
+        table.getTableHeader().setVisible(false);
+
+        setLayout(new BorderLayout());
+        add(new JScrollPane(table));
+    }
+
+    public void addMessage(String username, String message) {
+        tableModel.addRow(new Object[] {username, message});
     }
 }

@@ -9,10 +9,13 @@ import java.awt.event.KeyListener;
 public class TextboxPanel extends JPanel implements KeyListener, ActionListener {
     JTextField textField;
     JButton sendButton;
+    ChatPanel parent;
 
-    public TextboxPanel() {
+    public TextboxPanel(ChatPanel parent) {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        this.parent = parent;
 
         textField = new JTextField();
         textField.addKeyListener(this);
@@ -42,6 +45,18 @@ public class TextboxPanel extends JPanel implements KeyListener, ActionListener 
     public void keyPressed(KeyEvent keyEvent) {}
 
     private void send() {
+        String txt = textField.getText();
+
+        if (txt == null) {
+            System.out.println("Errore: messaggio inviato null");
+            return;
+        }
+
+        if (txt.isEmpty()) {
+            return;
+        }
+
+        parent.onMessage("this", txt);
         textField.setText("");
     }
 }
