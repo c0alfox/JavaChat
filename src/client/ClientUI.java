@@ -4,9 +4,14 @@ import protocol.ResponseStatusMessageRunner;
 import protocol.UpdateMessageRunner;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 
 public class ClientUI extends JFrame {
+    public static Color invertColor(Color c) {
+        return new Color(0xFF000000 | (0xFFFFFFFF - c.getRGB()));
+    }
+
     public ClientUI() {
         super("Java Chat");
 
@@ -37,18 +42,25 @@ public class ClientUI extends JFrame {
             }
         }
 
+        String uname = "";
+        Color ucolor = new Color(0);
         while (Client.uname == null) {
             UpdateMessageRunner u = UserCreationDialog.showUserCreationDialog();
             if (u == null) {
                 continue;
             }
 
-            Client.uname = u.getUname();
+            Client.uname = uname = u.getUname();
+            ucolor = new Color(Integer.parseInt(u.getColor(), 16));
             Client.net.<ResponseStatusMessageRunner>awaitSend(u);
         }
 
-        add(new ChatPanel());
+        UserPanel usrPanel = new UserPanel();
+        usrPanel.addUser(uname, ucolor);
+        usrPanel.addUser(uname, ucolor);
+        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, usrPanel, new ChatPanel());
 
+        add(split);
         setVisible(true);
     }
 }

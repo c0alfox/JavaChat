@@ -20,7 +20,6 @@ public class ChatPanel extends JPanel {
     }
 
     public void onMessage(String username, String message) {
-        Client.send(message);
         mlp.addMessage(username, message);
     }
 }
