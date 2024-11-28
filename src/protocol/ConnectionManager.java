@@ -2,61 +2,36 @@ package protocol;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.concurrent.SynchronousQueue;
+import java.util.HashMap;
+import java.util.function.Consumer;
 
-public class ConnectionManager {
-    final ArrayList<Class<? extends MessageRunner>> exclude;
+public class ConnectionManager extends Connection {
+    boolean active = true;
+    HashMap<Class<? extends MessageRunner>, Consumer<? extends MessageRunner>> functionMappings;
 
-    Connection c;
-    boolean active;
-    SynchronousQueue<MessageRunner> sentQueue;
-    SynchronousQueue<MessageRunner> recvQueue;
-
-    public ConnectionManager(String target, Collection<Class<? extends MessageRunner>> excludes) throws IOException {
-        c = new Connection(target);
-        sentQueue = new SynchronousQueue<>();
-        recvQueue = new SynchronousQueue<>();
-
-        exclude = new ArrayList<>(excludes);
+    public ConnectionManager(String target) throws IOException {
+        super(target);
+        functionMappings = new HashMap<>();
     }
 
-    public ConnectionManager(Socket socket, Collection<Class<? extends MessageRunner>> excludes) throws IOException {
-        c = new Connection(socket);
-        sentQueue = new SynchronousQueue<>();
-        recvQueue = new SynchronousQueue<>();
-
-        exclude = new ArrayList<>(excludes);
-    }
-
-    public ConnectionManager(Connection c, Collection<Class<? extends MessageRunner>> excludes) {
-        this.c = c;
-        sentQueue = new SynchronousQueue<>();
-        recvQueue = new SynchronousQueue<>();
-
-        exclude = new ArrayList<>(excludes);
+    public ConnectionManager(Socket s) throws IOException {
+        super(s);
+        functionMappings = new HashMap<>();
     }
 
     public void start() {
         new ReceiveThread().start();
-    }
-
-    public void send(MessageRunner m) {
-        c.send(m.toString());
-        System.out.println("> " + m);
-    }
-
-    public synchronized <R extends MessageRunner> R awaitSend(MessageRunner m) {
-
-        return (R) m;
+        System.out.println("Connessione stabilita con " + socket.getInetAddress().getHostAddress());
     }
 
     public void close() {
         active = false;
+        System.out.println("Connessione terminata con " + socket.getInetAddress().getHostAddress());
     }
 
-    public class ExcludedPacketException extends Exception {
+    public synchronized <T extends MessageRunner> ConnectionManager on(Class<T> type, Consumer<T> method) {
+        functionMappings.put(type, method);
+        return this;
     }
 
     private class ReceiveThread extends Thread {
@@ -64,10 +39,20 @@ public class ConnectionManager {
         public void run() {
             while (active) {
                 try {
-                    String payload = c.recv();
-                    System.out.println("< " + payload);
+                    String payload = recv();
+                    MessageRunner m = MessageRunner.create(payload);
+
+                    Consumer<MessageRunner> consumer = (Consumer<MessageRunner>) functionMappings.get(m.getClass());
+
+                    if (consumer != null) {
+                        consumer.accept(m);
+                    } else {
+                        System.out.println("Messaggio " + payload + " non gestito");
+                    }
                 } catch (IOException e) {
                     if (active) System.out.println("Errore nella ricezione del messaggio");
+                } catch (MessageRunner.IllformedMessageException e) {
+                    System.out.println("Messaggio malformato");
                 }
             }
         }
