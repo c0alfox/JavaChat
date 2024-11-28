@@ -7,9 +7,11 @@ import java.nio.charset.StandardCharsets;
 public class Connection {
     public static final int PORT = 16384;
 
-    private Socket socket;
-    private BufferedReader recv;
-    private PrintWriter send;
+    protected Socket socket;
+    protected BufferedReader recv;
+    protected PrintWriter send;
+
+    protected Connection() {}
 
     public Connection(String target) throws IOException {
         socket = new Socket(target, PORT);
@@ -30,11 +32,11 @@ public class Connection {
         return socket;
     }
 
-    public void send(String payload) {
+    public synchronized void send(String payload) {
         send.println(payload);
     }
 
-    public String recv() throws IOException {
+    public synchronized String recv() throws IOException {
         return recv.readLine();
     }
 

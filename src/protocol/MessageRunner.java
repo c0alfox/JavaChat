@@ -2,7 +2,7 @@ package protocol;
 
 import java.util.HashMap;
 
-public sealed abstract class MessageRunner permits CommandMessageRunner, DataMessageRunner, ErrorMessageRunner, JoinMessageRunner, LeaveMessageRunner, MsgMessageRunner, SuggestionMessageRunner, UpdateMessageRunner {
+public sealed abstract class MessageRunner permits CommandMessageRunner, DataMessageRunner, ResponseStatusMessageRunner, JoinMessageRunner, LeaveMessageRunner, MsgMessageRunner, SuggestionMessageRunner, UpdateMessageRunner {
     private int id = 0;
 
     public static final class IllformedMessageException extends Exception {}
@@ -74,8 +74,8 @@ public sealed abstract class MessageRunner permits CommandMessageRunner, DataMes
                 return new DataMessageRunner(users);
             }
 
-            case 'e':
-                return new ErrorMessageRunner(payload.substring(1));
+            case 'r':
+                return new ResponseStatusMessageRunner(payload.substring(1));
 
             default:
                 throw new IllformedMessageException();

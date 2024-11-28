@@ -1,9 +1,9 @@
 package protocol;
 
-public final class StatusMessageRunner extends MessageRunner {
+public final class ResponseStatusMessageRunner extends MessageRunner {
     String msg;
 
-    public StatusMessageRunner(String substring) {
+    public ResponseStatusMessageRunner(String substring) {
         msg = substring;
     }
 
@@ -14,6 +14,6 @@ public final class StatusMessageRunner extends MessageRunner {
 
     @Override
     public String toString() {
-        return "s " + msg;
+        return "r " + msg;
     }
 }
