@@ -10,6 +10,10 @@ public class ReqRespManager {
     int greatestUsedId = 0;
     TreeSet<Integer> availableKnownIds;
 
+    public ReqRespManager(Connection c) {
+        this.c = c;
+    }
+
     int popId() {
         return Objects.requireNonNullElse(availableKnownIds.pollLast(), ++greatestUsedId);
     }
@@ -20,10 +24,6 @@ public class ReqRespManager {
         } else {
             availableKnownIds.add(id);
         }
-    }
-
-    public ReqRespManager(Connection c) {
-        this.c = c;
     }
 
     public void request(String payload, Consumer<String> responseCallback) {

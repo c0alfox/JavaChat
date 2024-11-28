@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 public final class DataMessageRunner extends MessageRunner {
-    private HashMap<String, String> users;
+    private final HashMap<String, String> users;
 
     public DataMessageRunner(HashMap<String, String> users) {
         this.users = users;

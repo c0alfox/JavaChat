@@ -28,6 +28,6 @@ public class MessageListPanel extends JPanel {
     }
 
     public void addMessage(String username, String message) {
-        tableModel.addRow(new Object[] {username, message});
+        tableModel.addRow(new Object[]{username, message});
     }
 }

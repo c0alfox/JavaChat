@@ -1,9 +1,10 @@
 package server;
 
+import protocol.Connection;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import protocol.Connection;
 
 public class Server {
     static Connection c;

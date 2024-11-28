@@ -1,8 +1,10 @@
 package client;
 
+import protocol.ResponseStatusMessageRunner;
+import protocol.UpdateMessageRunner;
+
 import javax.swing.*;
 import java.io.IOException;
-import protocol.UpdateMessageRunner;
 
 public class ClientUI extends JFrame {
     public ClientUI() {
@@ -35,14 +37,14 @@ public class ClientUI extends JFrame {
             }
         }
 
-        while(Client.uname == null) {
+        while (Client.uname == null) {
             UpdateMessageRunner u = UserCreationDialog.showUserCreationDialog();
             if (u == null) {
                 continue;
             }
 
             Client.uname = u.getUname();
-            Client.send(u);
+            Client.net.<ResponseStatusMessageRunner>awaitSend(u);
         }
 
         add(new ChatPanel());

@@ -1,34 +1,24 @@
 package client;
 
-import java.io.IOException;
-
 import protocol.Connection;
-import protocol.MessageRunner;
-import protocol.ResponseManager;
+import protocol.ConnectionManager;
+import protocol.MsgMessageRunner;
+
+import java.io.IOException;
+import java.util.List;
 
 public class Client {
     static Connection c;
+    static ConnectionManager net;
     static String uname;
 
     public static void main(String[] args) {
         new ClientUI();
-        new ResponseManager(c).start();
     }
 
     public static void connect(String target) throws IOException {
         c = new Connection(target);
-    }
-
-    private static void close() throws IOException {
-        c.close();
-    }
-
-    public static void send(String payload) {
-        c.send("m this " + payload);
-        System.out.println("> m this " + payload);
-    }
-
-    public static void send(MessageRunner mr) {
-        send(mr.toString());
+        net = new ConnectionManager(c, List.of(MsgMessageRunner.class));
+        net.start();
     }
 }

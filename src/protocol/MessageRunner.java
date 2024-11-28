@@ -5,9 +5,6 @@ import java.util.HashMap;
 public sealed abstract class MessageRunner permits CommandMessageRunner, DataMessageRunner, ResponseStatusMessageRunner, JoinMessageRunner, LeaveMessageRunner, MsgMessageRunner, SuggestionMessageRunner, UpdateMessageRunner {
     private int id = 0;
 
-    public static final class IllformedMessageException extends Exception {}
-    public static final class WrongEnvironmentException extends Exception {}
-
     public static MessageRunner create(String payload) throws IllformedMessageException {
         if (payload.isEmpty()) {
             throw new IllformedMessageException();
@@ -102,5 +99,11 @@ public sealed abstract class MessageRunner permits CommandMessageRunner, DataMes
         }
 
         return id + serverNoId();
+    }
+
+    public static final class IllformedMessageException extends Exception {
+    }
+
+    public static final class WrongEnvironmentException extends Exception {
     }
 }

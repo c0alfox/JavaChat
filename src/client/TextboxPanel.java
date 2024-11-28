@@ -39,10 +39,12 @@ public class TextboxPanel extends JPanel implements KeyListener, ActionListener 
     }
 
     @Override
-    public void keyTyped(KeyEvent keyEvent) {}
+    public void keyTyped(KeyEvent keyEvent) {
+    }
 
     @Override
-    public void keyPressed(KeyEvent keyEvent) {}
+    public void keyPressed(KeyEvent keyEvent) {
+    }
 
     private void send() {
         String txt = textField.getText();

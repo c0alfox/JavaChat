@@ -11,7 +11,8 @@ public class Connection {
     protected BufferedReader recv;
     protected PrintWriter send;
 
-    protected Connection() {}
+    protected Connection() {
+    }
 
     public Connection(String target) throws IOException {
         socket = new Socket(target, PORT);

@@ -7,14 +7,12 @@ import java.util.Collection;
 import java.util.concurrent.SynchronousQueue;
 
 public class ConnectionManager {
-    public class ExcludedPacketException extends Exception {};
+    final ArrayList<Class<? extends MessageRunner>> exclude;
 
     Connection c;
     boolean active;
     SynchronousQueue<MessageRunner> sentQueue;
     SynchronousQueue<MessageRunner> recvQueue;
-
-    final ArrayList<Class<? extends MessageRunner>> exclude;
 
     public ConnectionManager(String target, Collection<Class<? extends MessageRunner>> excludes) throws IOException {
         c = new Connection(target);
@@ -46,11 +44,11 @@ public class ConnectionManager {
 
     public void send(MessageRunner m) {
         c.send(m.toString());
-        System.out.println("> " + m.toString());
+        System.out.println("> " + m);
     }
 
     public synchronized <R extends MessageRunner> R awaitSend(MessageRunner m) {
-        
+
         return (R) m;
     }
 
@@ -58,10 +56,13 @@ public class ConnectionManager {
         active = false;
     }
 
+    public class ExcludedPacketException extends Exception {
+    }
+
     private class ReceiveThread extends Thread {
         @Override
         public void run() {
-            while(active) {
+            while (active) {
                 try {
                     String payload = c.recv();
                     System.out.println("< " + payload);

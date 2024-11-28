@@ -10,7 +10,7 @@ public class UserCreationDialog {
         JTextField username = new JTextField();
         JColorChooser color = new JColorChooser(Color.RED);
 
-        final JComponent[] inputs = new JComponent[] {
+        final JComponent[] inputs = new JComponent[]{
                 new JLabel("Nome Utente: "),
                 username,
                 new JLabel("Colore: "),
@@ -20,7 +20,7 @@ public class UserCreationDialog {
         int result = JOptionPane.showConfirmDialog(null, inputs);
         if (result == JOptionPane.OK_OPTION) {
             String buf = Integer.toHexString(color.getColor().getRGB());
-            String colorstring = buf.substring(buf.length()-6);
+            String colorstring = buf.substring(buf.length() - 6);
             return new UpdateMessageRunner(username.getText(), colorstring);
         }
         return null;

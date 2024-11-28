@@ -1,7 +1,7 @@
 package protocol;
 
 public final class CommandMessageRunner extends MessageRunner {
-    private String cmd;
+    private final String cmd;
 
     public CommandMessageRunner(String cmd) {
         this.cmd = cmd;

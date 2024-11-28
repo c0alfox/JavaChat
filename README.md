@@ -10,6 +10,9 @@ Ogni messaggio è strutturato come segue: `<carattere iniziale> <corpo del messa
 
 Il carattere iniziale è codificato e può assumere solo i seguenti valori:
 
+<!-- FIX: È inutile che il messaggio dell'utente contenga lo username -->
+<!-- FIX: È impossibile modificare l'username -->
+
 - `c` (da command) - Il client invia al server `c <stringa comando>` e il server risponderà secondo le specifiche alla sezione [comandi](#comandi);
 - `m` (da message) - Se il client invia al server `m <username> <messaggio>`, il messaggio verrà inviato a chiunque è connesso allo stesso canale dell'utente. Se il server invia un pacchetto formato analogamente, allora il client dovrà interpretarlo come messaggio in arrivo;
 - `p` (da private) - Se il server invia al client `p <source> <messaggio>`, il client tratterà il messaggio come un messaggio privato da un singolo utente;
