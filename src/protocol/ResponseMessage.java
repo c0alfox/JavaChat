@@ -1,5 +1,7 @@
 package protocol;
 
+import java.util.Optional;
+
 public class ResponseMessage extends Message {
     public final String msg;
 
@@ -10,5 +12,9 @@ public class ResponseMessage extends Message {
     @Override
     public String toString() {
         return "r " + msg;
+    }
+
+    public Optional<String> toOptional() {
+        return msg.equals("OK") ? Optional.empty() : Optional.of(msg);
     }
 }
