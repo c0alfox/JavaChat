@@ -2,6 +2,7 @@ package server;
 
 import protocol.Connection;
 import protocol.ConnectionManager;
+import protocol.UserMessage;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -22,7 +23,16 @@ public class Server {
         while (true) {
             try {
                 Socket s = ss.accept();
-                new ConnectionManager(s).start();
+                ConnectionManager net = new ConnectionManager(s);
+                net.on(UserMessage.class, msg -> {
+                    User user = new User(net, msg.uname, msg.color);
+                    try {
+                        User.addUser(user);
+                    } finally {
+                        User.removeUser(user);
+                    }
+                });
+                net.start();
             } catch (IOException e) {
                 System.out.println("Errore nell'apertura della connessione");
             }
