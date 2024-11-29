@@ -1,13 +1,17 @@
 package protocol;
 
+import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Optional;
+import java.util.concurrent.SynchronousQueue;
 import java.util.function.Consumer;
 
 public class ConnectionManager extends Connection {
     boolean active = true;
     HashMap<Class<? extends Message>, Consumer<? extends Message>> functionMappings;
+    SynchronousQueue<Consumer<Optional<String>>> responseCallbackQueue;
 
     public ConnectionManager(String target) throws IOException {
         super(target);
@@ -32,6 +36,15 @@ public class ConnectionManager extends Connection {
     public synchronized <T extends Message> ConnectionManager on(Class<T> type, Consumer<T> method) {
         functionMappings.put(type, method);
         return this;
+    }
+
+    public synchronized void send(String payload, Consumer<Optional<String>> callback) {
+        responseCallbackQueue.add(callback);
+        super.send(payload);
+    }
+
+    public synchronized Consumer<Optional<String>> pollCallback() {
+        return responseCallbackQueue.poll();
     }
 
     private class ReceiveThread extends Thread {

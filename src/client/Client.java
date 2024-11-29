@@ -18,6 +18,7 @@ public class Client {
         net.on(InboundMessage.class, msg -> ui.chatPanel.onMessage(msg));
         net.on(JoinMessage.class, msg -> ui.userPanel.addUser(msg.uname, msg.color));
         net.on(LeaveMessage.class, msg -> ui.userPanel.removeUser(msg.uname));
+        net.on(ResponseMessage.class, msg -> net.pollCallback().accept(msg.toOptional()));
 
         net.start();
     }
