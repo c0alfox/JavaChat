@@ -8,11 +8,6 @@ public final class LeaveMessage extends Message {
     }
 
     @Override
-    private String serverNoId() {
-        return "";
-    }
-
-    @Override
     public String toString() {
         return "l " + uname;
     }

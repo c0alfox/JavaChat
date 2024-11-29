@@ -11,11 +11,6 @@ public final class DataMessage extends Message {
     }
 
     @Override
-    private String serverNoId() {
-        return "";
-    }
-
-    @Override
     public String toString() {
         AtomicReference<String> res = new AtomicReference<>("d");
         users.forEach((String uname, String color) -> res.set(res.get() + (" " + uname + " " + color)));

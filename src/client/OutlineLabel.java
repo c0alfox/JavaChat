@@ -32,7 +32,7 @@ public class OutlineLabel extends JLabel {
 
     @Override
     public Color getForeground() {
-        if ( isPaintingOutline ) {
+        if (isPaintingOutline) {
             return outlineColor;
         } else {
             return super.getForeground();
@@ -41,7 +41,7 @@ public class OutlineLabel extends JLabel {
 
     @Override
     public boolean isOpaque() {
-        if ( forceTransparent ) {
+        if (forceTransparent) {
             return false;
         } else {
             return super.isOpaque();
@@ -52,7 +52,7 @@ public class OutlineLabel extends JLabel {
     public void paint(Graphics g) {
 
         String text = getText();
-        if ( text == null || text.isEmpty()) {
+        if (text == null || text.isEmpty()) {
             super.paint(g);
             return;
         }
@@ -61,20 +61,28 @@ public class OutlineLabel extends JLabel {
         // 8 9 4
         // 7 6 5
 
-        if ( isOpaque() )
+        if (isOpaque())
             super.paint(g);
 
         forceTransparent = true;
         isPaintingOutline = true;
-        g.translate(-1, -1); super.paint(g); // 1
-        g.translate( 1,  0); super.paint(g); // 2
-        g.translate( 1,  0); super.paint(g); // 3
-        g.translate( 0,  1); super.paint(g); // 4
-        g.translate( 0,  1); super.paint(g); // 5
-        g.translate(-1,  0); super.paint(g); // 6
-        g.translate(-1,  0); super.paint(g); // 7
-        g.translate( 0, -1); super.paint(g); // 8
-        g.translate( 1,  0); // 9
+        g.translate(-1, -1);
+        super.paint(g); // 1
+        g.translate(1, 0);
+        super.paint(g); // 2
+        g.translate(1, 0);
+        super.paint(g); // 3
+        g.translate(0, 1);
+        super.paint(g); // 4
+        g.translate(0, 1);
+        super.paint(g); // 5
+        g.translate(-1, 0);
+        super.paint(g); // 6
+        g.translate(-1, 0);
+        super.paint(g); // 7
+        g.translate(0, -1);
+        super.paint(g); // 8
+        g.translate(1, 0); // 9
         isPaintingOutline = false;
 
         super.paint(g);

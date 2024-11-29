@@ -1,8 +1,8 @@
 package protocol;
 
 public final class UpdateMessage extends Message {
-    String uname;
-    String color;
+    final String uname;
+    final String color;
 
     public UpdateMessage(String uname, String color) {
         this.uname = uname;
@@ -15,12 +15,6 @@ public final class UpdateMessage extends Message {
 
     public String getColor() {
         return color;
-    }
-
-
-    @Override
-    private String serverNoId() {
-        return "";
     }
 
     @Override

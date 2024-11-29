@@ -40,6 +40,11 @@ public class ConnectionManager extends Connection {
             while (active) {
                 try {
                     String payload = recv();
+                    if (payload == null) {
+                        close();
+                        continue;
+                    }
+
                     Message m = Message.create(payload);
 
                     Consumer<Message> consumer = (Consumer<Message>) functionMappings.get(m.getClass());

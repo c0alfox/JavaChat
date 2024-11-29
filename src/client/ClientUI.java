@@ -7,10 +7,6 @@ import java.awt.*;
 import java.io.IOException;
 
 public class ClientUI extends JFrame {
-    public static Color invertColor(Color c) {
-        return new Color(0xFF000000 | (0xFFFFFFFF - c.getRGB()));
-    }
-
     public ClientUI() {
         super("Java Chat");
 
@@ -62,5 +58,9 @@ public class ClientUI extends JFrame {
 
         add(split);
         setVisible(true);
+    }
+
+    public static Color invertColor(Color c) {
+        return new Color(0xFF000000 | (0xFFFFFFFF - c.getRGB()));
     }
 }

@@ -8,8 +8,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-    static Connection c;
-
     public static void main(String[] args) {
         ServerSocket ss;
 

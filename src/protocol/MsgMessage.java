@@ -1,3 +1,4 @@
+//TODO: DELETE
 package protocol;
 
 public final class MsgMessage extends Message {
