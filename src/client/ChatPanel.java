@@ -1,7 +1,5 @@
 package client;
 
-import protocol.MsgMessage;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -21,8 +19,7 @@ public class ChatPanel extends JPanel {
         setVisible(true);
     }
 
-    public void onMessage(String username, String message) {
-        Client.net.send(new MsgMessage(username, message).toString());
-        mlp.addMessage(username, message);
+    public synchronized void onMessage(String username, String message, boolean isPrivate) {
+        mlp.addMessage(username, message, isPrivate);
     }
 }

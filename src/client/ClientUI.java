@@ -7,6 +7,9 @@ import java.awt.*;
 import java.io.IOException;
 
 public class ClientUI extends JFrame {
+    public final ChatPanel chatPanel;
+    public final UserPanel userPanel;
+
     public ClientUI() {
         super("Java Chat");
 
@@ -21,7 +24,6 @@ public class ClientUI extends JFrame {
                     int out = JOptionPane.showConfirmDialog(null, "Sicuro di voler uscire?", "Conferma", JOptionPane.YES_NO_OPTION);
                     if (out == JOptionPane.OK_OPTION) {
                         System.exit(1);
-                        return;
                     }
                     continue;
                 }
@@ -38,7 +40,7 @@ public class ClientUI extends JFrame {
         }
 
         String uname = "";
-        Color ucolor = new Color(0);
+        String ucolor = "";
         while (Client.uname == null) {
             UpdateMessage u = UserCreationDialog.showUserCreationDialog();
             if (u == null) {
@@ -47,20 +49,22 @@ public class ClientUI extends JFrame {
 
             Client.uname = u.getUname();
             Client.uname = uname = u.getUname();
-            ucolor = new Color(Integer.parseInt(u.getColor(), 16));
+            ucolor = u.getColor();
             Client.net.send(u.toString());
         }
 
-        UserPanel usrPanel = new UserPanel();
-        usrPanel.addUser(uname, ucolor);
-        usrPanel.addUser(uname, ucolor);
-        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, usrPanel, new ChatPanel());
+        JSplitPane split = new JSplitPane(
+                JSplitPane.HORIZONTAL_SPLIT,
+                userPanel = new UserPanel(),
+                chatPanel = new ChatPanel()
+        );
+        userPanel.addUser(uname, ucolor);
 
         add(split);
         setVisible(true);
     }
 
-    public static Color invertColor(Color c) {
-        return new Color(0xFF000000 | (0xFFFFFFFF - c.getRGB()));
+    public static Color borderColor(Color bgColor) {
+        return new Color(0x11FFFFFF & (0xFFFFFFFF - bgColor.getRGB()));
     }
 }

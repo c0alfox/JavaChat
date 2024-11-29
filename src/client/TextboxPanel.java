@@ -58,7 +58,7 @@ public class TextboxPanel extends JPanel implements KeyListener, ActionListener 
             return;
         }
 
-        parent.onMessage("this", txt);
+        parent.onMessage(Client.uname, txt, false);
         textField.setText("");
     }
 }

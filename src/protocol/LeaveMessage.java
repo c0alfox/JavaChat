@@ -1,10 +1,14 @@
 package protocol;
 
 public final class LeaveMessage extends Message {
-    String uname;
+    final String uname;
 
     public LeaveMessage(String uname) {
         this.uname = uname;
+    }
+
+    public String getUname() {
+        return uname;
     }
 
     @Override

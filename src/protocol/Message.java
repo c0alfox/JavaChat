@@ -70,14 +70,6 @@ public abstract class Message {
             case 'c':
                 return new CommandMessage(payload.substring(1));
 
-            case 'm': {
-                int idx = payload.indexOf(' ');
-                if (idx < 0) {
-                    throw new IllformedMessageException();
-                }
-                return new MsgMessage(payload.substring(1, idx), payload.substring(idx + 1));
-            }
-
             case 's':
                 return new SuggestionMessage();
 

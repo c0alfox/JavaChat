@@ -27,7 +27,8 @@ public class MessageListPanel extends JPanel {
         add(new JScrollPane(table));
     }
 
-    public void addMessage(String username, String message) {
-        tableModel.addRow(new Object[]{username, message});
+    public void addMessage(String username, String message, boolean isPrivate) {
+        String suffix = isPrivate ? " [whisper]" : "";
+        tableModel.addRow(new Object[]{username + suffix, message});
     }
 }
