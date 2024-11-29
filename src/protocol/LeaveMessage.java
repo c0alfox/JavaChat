@@ -1,14 +1,14 @@
 package protocol;
 
-public final class LeaveMessageRunner extends MessageRunner {
+public final class LeaveMessage extends Message {
     String uname;
 
-    public LeaveMessageRunner(String uname) {
+    public LeaveMessage(String uname) {
         this.uname = uname;
     }
 
     @Override
-    protected String serverNoId() {
+    private String serverNoId() {
         return "";
     }
 

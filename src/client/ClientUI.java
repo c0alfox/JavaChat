@@ -1,7 +1,6 @@
 package client;
 
-import protocol.ResponseStatusMessageRunner;
-import protocol.UpdateMessageRunner;
+import protocol.UpdateMessage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +18,7 @@ public class ClientUI extends JFrame {
         setSize(800, 600);
         setLocationRelativeTo(null);
 
-        while (Client.c == null) {
+        while (Client.net == null) {
             try {
                 String input = JOptionPane.showInputDialog(null, "Inserisci l'indirizzo del server");
                 if (input == null || input.isEmpty()) {
@@ -45,14 +44,15 @@ public class ClientUI extends JFrame {
         String uname = "";
         Color ucolor = new Color(0);
         while (Client.uname == null) {
-            UpdateMessageRunner u = UserCreationDialog.showUserCreationDialog();
+            UpdateMessage u = UserCreationDialog.showUserCreationDialog();
             if (u == null) {
                 continue;
             }
 
+            Client.uname = u.getUname();
             Client.uname = uname = u.getUname();
             ucolor = new Color(Integer.parseInt(u.getColor(), 16));
-            Client.net.<ResponseStatusMessageRunner>awaitSend(u);
+            Client.net.send(u.toString());
         }
 
         UserPanel usrPanel = new UserPanel();

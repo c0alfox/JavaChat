@@ -4,6 +4,57 @@ Chat con interfaccia grafica in Java
 
 ## Protocollo di connessione
 
+Il protocollo scambia messaggi testuali codificati in utf-8. Ogni messaggio inizia con un carattere che ne indica la natura.
+
+I caratteri iniziali codificati nel protocollo sono:
+
+- `m` (da message), vedi la sezione [messaggi pubblici](#messaggi-pubblici).
+- `p` (da private), vedi la sezione [messaggi privati](#messaggi-privati).
+
+La sintassi dei messaggi del protocollo è espressa segue:
+
+- il testo fuori dalle parentesi è sintassi fissa;
+- il testo in parentesi quadre `[]` è opzionale;
+- il testo in parentesi angolari `<>` è obbligatorio.
+
+### Messaggi Pubblici
+
+Un pacchetto messaggio comincia per `m`. la sua sintassi è `m <nome utente> <corpo del messaggio>`, dove:
+
+- `<nome utente>` è un nome utente che deve essere valido, in caso non lo sia il messaggio è scartato;
+- `<messaggio>` è il corpo del messaggio.
+
+Così che:
+
+`m <nome utente> <messaggio>` inviato dal server al client, rappresenta un messaggio in arrivo nel canale attuale da parte di `<nome utente>`;
+
+`m <messaggio>` inviato dal client al server 
+
+
+### Messaggi privati
+
+Un pacchetto messaggio privato comincia per `p`. La sua sintassi è `p <target> <corpo del messaggio>`, dove:
+
+- `<target>` è il nome utente del destinarario o del mittente, in caso non sia valido il messaggio è scartato;
+- `<corpo del messaggio>` è il corpo del messaggio;
+
+Così che:
+
+`p <target> <messaggio>` inviato dal client al server, rappresenta un messaggio privato inviato dall'utente attuale a `<target>`;
+
+`p <target> <messaggio>` inviato dal server al client, rappresenta un messaggio privato inviato da `<target>` all'utente attuale.
+
+
+### Stato
+
+Un pacchetto di stato comincia per `s`.
+
+### Query
+
+Un pacchetto di query comincia per `q`.
+
+
+
 Il protocollo si articola con messaggi testuali codificati in standard utf-8.
 
 Ogni messaggio è strutturato come segue: `<carattere iniziale> <corpo del messaggio>`

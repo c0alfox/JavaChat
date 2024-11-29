@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 public class ConnectionManager extends Connection {
     boolean active = true;
-    HashMap<Class<? extends MessageRunner>, Consumer<? extends MessageRunner>> functionMappings;
+    HashMap<Class<? extends Message>, Consumer<? extends Message>> functionMappings;
 
     public ConnectionManager(String target) throws IOException {
         super(target);
@@ -29,7 +29,7 @@ public class ConnectionManager extends Connection {
         System.out.println("Connessione terminata con " + socket.getInetAddress().getHostAddress());
     }
 
-    public synchronized <T extends MessageRunner> ConnectionManager on(Class<T> type, Consumer<T> method) {
+    public synchronized <T extends Message> ConnectionManager on(Class<T> type, Consumer<T> method) {
         functionMappings.put(type, method);
         return this;
     }
@@ -40,9 +40,9 @@ public class ConnectionManager extends Connection {
             while (active) {
                 try {
                     String payload = recv();
-                    MessageRunner m = MessageRunner.create(payload);
+                    Message m = Message.create(payload);
 
-                    Consumer<MessageRunner> consumer = (Consumer<MessageRunner>) functionMappings.get(m.getClass());
+                    Consumer<Message> consumer = (Consumer<Message>) functionMappings.get(m.getClass());
 
                     if (consumer != null) {
                         consumer.accept(m);
@@ -51,7 +51,7 @@ public class ConnectionManager extends Connection {
                     }
                 } catch (IOException e) {
                     if (active) System.out.println("Errore nella ricezione del messaggio");
-                } catch (MessageRunner.IllformedMessageException e) {
+                } catch (Message.IllformedMessageException e) {
                     System.out.println("Messaggio malformato");
                 }
             }

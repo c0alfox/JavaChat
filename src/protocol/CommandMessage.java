@@ -1,15 +1,14 @@
 package protocol;
 
-public final class CommandMessageRunner extends MessageRunner {
+public final class CommandMessage extends Message {
     private final String cmd;
 
-    public CommandMessageRunner(String cmd) {
+    public CommandMessage(String cmd) {
         this.cmd = cmd;
     }
 
-    @Override
-    public void client() {
-
+    public String getCmd() {
+        return cmd;
     }
 
     @Override

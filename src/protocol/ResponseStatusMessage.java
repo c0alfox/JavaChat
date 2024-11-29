@@ -1,14 +1,14 @@
 package protocol;
 
-public final class ResponseStatusMessageRunner extends MessageRunner {
+public final class ResponseStatusMessage extends Message {
     String msg;
 
-    public ResponseStatusMessageRunner(String substring) {
+    public ResponseStatusMessage(String substring) {
         msg = substring;
     }
 
     @Override
-    protected String serverNoId() {
+    private String serverNoId() {
         return "";
     }
 

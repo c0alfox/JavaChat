@@ -1,5 +1,7 @@
 package client;
 
+import protocol.MsgMessage;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -20,6 +22,7 @@ public class ChatPanel extends JPanel {
     }
 
     public void onMessage(String username, String message) {
+        Client.net.send(new MsgMessage(username, message).toString());
         mlp.addMessage(username, message);
     }
 }

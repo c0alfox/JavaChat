@@ -3,15 +3,15 @@ package protocol;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
-public final class DataMessageRunner extends MessageRunner {
+public final class DataMessage extends Message {
     private final HashMap<String, String> users;
 
-    public DataMessageRunner(HashMap<String, String> users) {
+    public DataMessage(HashMap<String, String> users) {
         this.users = users;
     }
 
     @Override
-    protected String serverNoId() {
+    private String serverNoId() {
         return "";
     }
 

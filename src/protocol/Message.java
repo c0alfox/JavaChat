@@ -2,28 +2,31 @@ package protocol;
 
 import java.util.HashMap;
 
-public sealed abstract class MessageRunner permits CommandMessageRunner, DataMessageRunner, ResponseStatusMessageRunner, JoinMessageRunner, LeaveMessageRunner, MsgMessageRunner, SuggestionMessageRunner, UpdateMessageRunner {
-    private int id = 0;
-
-    public static MessageRunner create(String payload) throws IllformedMessageException {
+public abstract class Message {
+    public static Message create(String payload) throws IllformedMessageException {
         if (payload.isEmpty()) {
             throw new IllformedMessageException();
         }
 
+        String msgString = payload.substring(2);
+
         switch (payload.charAt(0)) {
+            case 'o':
+                return new OutwardMessage(msgString);
+
             case 'c':
-                return new CommandMessageRunner(payload.substring(1));
+                return new CommandMessage(payload.substring(1));
 
             case 'm': {
                 int idx = payload.indexOf(' ');
                 if (idx < 0) {
                     throw new IllformedMessageException();
                 }
-                return new MsgMessageRunner(payload.substring(1, idx), payload.substring(idx + 1));
+                return new MsgMessage(payload.substring(1, idx), payload.substring(idx + 1));
             }
 
             case 's':
-                return new SuggestionMessageRunner();
+                return new SuggestionMessage();
 
             case 'j': {
                 String[] words = payload.substring(1).split(" ");
@@ -31,7 +34,7 @@ public sealed abstract class MessageRunner permits CommandMessageRunner, DataMes
                     throw new IllformedMessageException();
                 }
 
-                return new JoinMessageRunner(words[0], words[1]);
+                return new JoinMessage(words[0], words[1]);
             }
 
             case 'l': {
@@ -40,7 +43,7 @@ public sealed abstract class MessageRunner permits CommandMessageRunner, DataMes
                     throw new IllformedMessageException();
                 }
 
-                return new LeaveMessageRunner(words[0]);
+                return new LeaveMessage(words[0]);
             }
 
             case 'u': {
@@ -49,7 +52,7 @@ public sealed abstract class MessageRunner permits CommandMessageRunner, DataMes
                     throw new IllformedMessageException();
                 }
 
-                return new UpdateMessageRunner(words[0], words[1]);
+                return new UpdateMessage(words[0], words[1]);
             }
 
             case 'd': {
@@ -68,37 +71,15 @@ public sealed abstract class MessageRunner permits CommandMessageRunner, DataMes
                     users.put(words[i * 2 + 1], words[i * 2 + 2]);
                 }
 
-                return new DataMessageRunner(users);
+                return new DataMessage(users);
             }
 
             case 'r':
-                return new ResponseStatusMessageRunner(payload.substring(1));
+                return new ResponseStatusMessage(payload.substring(1));
 
             default:
                 throw new IllformedMessageException();
         }
-    }
-
-    public static MessageRunner create(String payload, int id) throws IllformedMessageException {
-        MessageRunner ret = MessageRunner.create(payload);
-        ret.id = id;
-        return ret;
-    }
-
-    public void client() throws WrongEnvironmentException {
-        throw new WrongEnvironmentException();
-    }
-
-    protected String serverNoId() throws WrongEnvironmentException {
-        throw new WrongEnvironmentException();
-    }
-
-    public String server() throws WrongEnvironmentException {
-        if (id == 0) {
-            serverNoId();
-        }
-
-        return id + serverNoId();
     }
 
     public static final class IllformedMessageException extends Exception {

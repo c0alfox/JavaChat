@@ -1,13 +1,13 @@
 package protocol;
 
-public final class SuggestionMessageRunner extends MessageRunner {
+public final class SuggestionMessage extends Message {
     @Override
     public void client() {
 
     }
 
     @Override
-    protected String serverNoId() {
+    private String serverNoId() {
         return "";
     }
 }

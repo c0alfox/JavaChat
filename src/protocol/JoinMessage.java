@@ -1,16 +1,16 @@
 package protocol;
 
-public final class JoinMessageRunner extends MessageRunner {
+public final class JoinMessage extends Message {
     String uname;
     String color;
 
-    public JoinMessageRunner(String uname, String color) {
+    public JoinMessage(String uname, String color) {
         this.uname = uname;
         this.color = color;
     }
 
     @Override
-    protected String serverNoId() {
+    private String serverNoId() {
         return "";
     }
 

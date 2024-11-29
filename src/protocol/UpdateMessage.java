@@ -1,10 +1,10 @@
 package protocol;
 
-public final class UpdateMessageRunner extends MessageRunner {
+public final class UpdateMessage extends Message {
     String uname;
     String color;
 
-    public UpdateMessageRunner(String uname, String color) {
+    public UpdateMessage(String uname, String color) {
         this.uname = uname;
         this.color = color;
     }
@@ -19,7 +19,7 @@ public final class UpdateMessageRunner extends MessageRunner {
 
 
     @Override
-    protected String serverNoId() {
+    private String serverNoId() {
         return "";
     }
 

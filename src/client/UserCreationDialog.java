@@ -1,12 +1,12 @@
 package client;
 
-import protocol.UpdateMessageRunner;
+import protocol.UpdateMessage;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class UserCreationDialog {
-    static UpdateMessageRunner showUserCreationDialog() {
+    static UpdateMessage showUserCreationDialog() {
         JTextField username = new JTextField();
         JColorChooser color = new JColorChooser(Color.RED);
 
@@ -21,7 +21,7 @@ public class UserCreationDialog {
         if (result == JOptionPane.OK_OPTION) {
             String buf = Integer.toHexString(color.getColor().getRGB());
             String colorstring = buf.substring(buf.length() - 6);
-            return new UpdateMessageRunner(username.getText(), colorstring);
+            return new UpdateMessage(username.getText(), colorstring);
         }
         return null;
     }
