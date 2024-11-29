@@ -1,26 +1,28 @@
 package protocol;
 
-import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Optional;
-import java.util.concurrent.SynchronousQueue;
+import java.util.Queue;
 import java.util.function.Consumer;
 
 public class ConnectionManager extends Connection {
     boolean active = true;
     HashMap<Class<? extends Message>, Consumer<? extends Message>> functionMappings;
-    SynchronousQueue<Consumer<Optional<String>>> responseCallbackQueue;
+    final Queue<Consumer<Optional<String>>> responseCallbackQueue;
 
     public ConnectionManager(String target) throws IOException {
         super(target);
         functionMappings = new HashMap<>();
+        responseCallbackQueue = new LinkedList<>();
     }
 
     public ConnectionManager(Socket s) throws IOException {
         super(s);
         functionMappings = new HashMap<>();
+        responseCallbackQueue = new LinkedList<>();
     }
 
     public void start() {
@@ -39,7 +41,7 @@ public class ConnectionManager extends Connection {
     }
 
     public synchronized void send(String payload, Consumer<Optional<String>> callback) {
-        responseCallbackQueue.add(callback);
+        responseCallbackQueue.offer(callback);
         super.send(payload);
     }
 
@@ -69,6 +71,7 @@ public class ConnectionManager extends Connection {
                     }
                 } catch (IOException e) {
                     if (active) System.out.println("Errore nella ricezione del messaggio");
+                    close();
                 } catch (Message.IllformedMessageException e) {
                     System.out.println("Messaggio malformato");
                 }

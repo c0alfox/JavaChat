@@ -50,7 +50,7 @@ public class ClientUI extends JFrame {
             Client.uname = u.uname;
             Client.uname = uname = u.uname;
             ucolor = u.color;
-            Client.net.send(u.toString());
+            Client.net.send(u.toString(), msg -> { if (msg.isPresent()) System.out.println(msg); });
         }
 
         JSplitPane split = new JSplitPane(

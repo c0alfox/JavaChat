@@ -61,8 +61,14 @@ public class TextboxPanel extends JPanel implements KeyListener, ActionListener 
             return;
         }
 
-        parent.onMessage(new InboundMessage(Client.uname, txt, false));
-        Client.net.send(new OutboundMessage(txt).toString());
+        Client.net.send(new OutboundMessage(txt).toString(), msg -> {
+            if (msg.isPresent()) {
+                // TODO: Handle message sent on banned channel
+                return;
+            }
+
+            parent.onMessage(new InboundMessage(Client.uname, txt, false));
+        });
         textField.setText("");
     }
 }
