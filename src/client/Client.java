@@ -18,10 +18,6 @@ public class Client {
         net.on(InboundMessage.class, msg -> ui.chatPanel.onMessage(msg.getUname(), msg.getMsg(), msg.getPrivate()));
         net.on(JoinMessage.class, msg -> ui.userPanel.addUser(msg.getUname(), msg.getColor()));
         net.on(LeaveMessage.class, msg -> ui.userPanel.removeUser(msg.getUname()));
-        net.on(UpdateMessage.class, msg -> {
-            ui.userPanel.removeUser(msg.getUname());
-            ui.userPanel.addUser(msg.getUname(), msg.getColor());
-        });
 
         net.start();
     }
