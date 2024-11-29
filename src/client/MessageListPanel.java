@@ -1,5 +1,7 @@
 package client;
 
+import protocol.InboundMessage;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -27,8 +29,8 @@ public class MessageListPanel extends JPanel {
         add(new JScrollPane(table));
     }
 
-    public void addMessage(String username, String message, boolean isPrivate) {
-        String suffix = isPrivate ? " [whisper]" : "";
-        tableModel.addRow(new Object[]{username + suffix, message});
+    public void addMessage(InboundMessage imsg) {
+        String suffix = imsg.isPrivate ? " [whisper]" : "";
+        tableModel.addRow(new Object[]{imsg.uname + suffix, imsg.msg});
     }
 }

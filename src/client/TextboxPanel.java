@@ -1,5 +1,8 @@
 package client;
 
+import protocol.InboundMessage;
+import protocol.OutboundMessage;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -58,7 +61,8 @@ public class TextboxPanel extends JPanel implements KeyListener, ActionListener 
             return;
         }
 
-        parent.onMessage(Client.uname, txt, false);
+        parent.onMessage(new InboundMessage(Client.uname, txt, false));
+        Client.net.send(new OutboundMessage(txt).toString());
         textField.setText("");
     }
 }

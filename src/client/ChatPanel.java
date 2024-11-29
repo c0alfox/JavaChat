@@ -1,5 +1,7 @@
 package client;
 
+import protocol.InboundMessage;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -19,7 +21,7 @@ public class ChatPanel extends JPanel {
         setVisible(true);
     }
 
-    public synchronized void onMessage(String username, String message, boolean isPrivate) {
-        mlp.addMessage(username, message, isPrivate);
+    public synchronized void onMessage(InboundMessage imsg) {
+        mlp.addMessage(imsg);
     }
 }
