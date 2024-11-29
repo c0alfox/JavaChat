@@ -1,14 +1,10 @@
 package protocol;
 
 public class OutboundMessage extends Message {
-    final String msg;
+    public final String msg;
 
     public OutboundMessage(String msg) {
         this.msg = msg;
-    }
-
-    public String getMsg() {
-        return msg;
     }
 
     @Override

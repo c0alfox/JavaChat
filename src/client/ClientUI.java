@@ -1,6 +1,6 @@
 package client;
 
-import protocol.UpdateMessage;
+import protocol.UserMessage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,14 +42,14 @@ public class ClientUI extends JFrame {
         String uname = "";
         String ucolor = "";
         while (Client.uname == null) {
-            UpdateMessage u = UserCreationDialog.showUserCreationDialog();
+            UserMessage u = UserCreationDialog.showUserCreationDialog();
             if (u == null) {
                 continue;
             }
 
-            Client.uname = u.getUname();
-            Client.uname = uname = u.getUname();
-            ucolor = u.getColor();
+            Client.uname = u.uname;
+            Client.uname = uname = u.uname;
+            ucolor = u.color;
             Client.net.send(u.toString());
         }
 

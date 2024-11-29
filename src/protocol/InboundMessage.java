@@ -1,9 +1,9 @@
 package protocol;
 
 public class InboundMessage extends Message {
-    final String uname;
-    final String msg;
-    final boolean isPrivate;
+    public final String uname;
+    public final String msg;
+    public final boolean isPrivate;
 
     public InboundMessage(String uname, String msg, boolean isPrivate) {
         this.uname = uname;

@@ -1,7 +1,5 @@
 package protocol;
 
-import java.util.HashMap;
-
 public abstract class Message {
     public static Message create(String payload) throws IllformedMessageException {
         if (payload.isEmpty()) {
@@ -12,25 +10,19 @@ public abstract class Message {
         String[] words = msgString.split(" ");
 
         switch (payload.charAt(0)) {
-            case 'o':
-                return new OutboundMessage(msgString);
-
             case 'u': {
                 if (words.length != 2) {
                     throw new IllformedMessageException();
                 }
 
-                return new UpdateMessage(words[0], words[1]);
+                return new UserMessage(words[0], words[1]);
             }
 
-            case 'i':
-            case 'p': {
-                if (words.length != 2) {
-                    throw new IllformedMessageException();
-                }
+            case 'r':
+                return new ResponseMessage(msgString);
 
-                return new InboundMessage(words[0], words[1], payload.charAt(0) == 'p');
-            }
+            case 'c':
+                return new CommandMessage(msgString);
 
             case 'j': {
                 if (words.length != 2) {
@@ -48,33 +40,23 @@ public abstract class Message {
                 return new LeaveMessage(words[0]);
             }
 
-            case 'd': {
-                if (words.length < 1) {
+            case 'i':
+            case 'p': {
+                if (words.length != 2) {
                     throw new IllformedMessageException();
                 }
 
-                // TODO: Check case for when N is NaN
-                int n = Integer.parseInt(words[0]);
-                if (words.length != n * 2 + 1) {
-                    throw new IllformedMessageException();
-                }
-
-                HashMap<String, String> users = new HashMap<>();
-                for (int i = 0; i < n; i++) {
-                    users.put(words[i * 2 + 1], words[i * 2 + 2]);
-                }
-
-                return new DataMessage(users);
+                return new InboundMessage(words[0], words[1], payload.charAt(0) == 'p');
             }
 
-            case 'c':
-                return new CommandMessage(payload.substring(1));
+            case 'o':
+                return new OutboundMessage(msgString);
 
-            case 's':
-                return new SuggestionMessage();
+            case 'a':
+                return new AddChannelMessage(msgString);
 
-            case 'r':
-                return new ResponseStatusMessage(payload.substring(1));
+            case 'd':
+                return new DeleteChannelMessage(msgString);
 
             default:
                 throw new IllformedMessageException();

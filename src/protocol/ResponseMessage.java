@@ -1,9 +1,9 @@
 package protocol;
 
-public final class ResponseStatusMessage extends Message {
-    String msg;
+public class ResponseMessage extends Message {
+    public final String msg;
 
-    public ResponseStatusMessage(String substring) {
+    public ResponseMessage(String substring) {
         msg = substring;
     }
 

@@ -1,14 +1,10 @@
 package protocol;
 
-public final class CommandMessage extends Message {
-    private final String cmd;
+public class CommandMessage extends Message {
+    public final String cmd;
 
     public CommandMessage(String cmd) {
         this.cmd = cmd;
-    }
-
-    public String getCmd() {
-        return cmd;
     }
 
     @Override
