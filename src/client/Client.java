@@ -2,6 +2,7 @@ package client;
 
 import protocol.*;
 
+import javax.swing.*;
 import java.io.IOException;
 
 public class Client {
@@ -16,10 +17,14 @@ public class Client {
 
     public static void connect(String target) throws IOException {
         net = new ConnectionManager(target);
-        net.on(InboundMessage.class, msg -> ui.chatPanel.onMessage(msg));
-        net.on(JoinMessage.class, msg -> ui.userPanel.addUser(msg.uname, msg.color));
-        net.on(LeaveMessage.class, msg -> ui.userPanel.removeUser(msg.uname));
-        net.on(ResponseMessage.class, msg -> net.pollCallback().accept(msg.toOptional()));
+        net.on(InboundMessage.class, msg -> ui.chatPanel.onMessage(msg))
+                .on(JoinMessage.class, msg -> ui.userPanel.addUser(msg.uname, msg.color))
+                .on(LeaveMessage.class, msg -> ui.userPanel.removeUser(msg.uname))
+                .on(ResponseMessage.class, msg -> net.pollCallback().accept(msg.toOptional()))
+                .addDisposeRunnable(() -> {
+                    JOptionPane.showConfirmDialog(null, "Connessione al server terminata");
+                    System.exit(0);
+                });
 
         net.start();
     }

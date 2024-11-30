@@ -27,7 +27,7 @@ public class Server {
                 net.on(UserMessage.class, msg -> {
                     User user = new User(net, msg.uname, msg.color);
                     user.net.addDisposeRunnable(() -> User.removeUser(user));
-                    User.addUser(user); // TODO: Remove user when connection is closed
+                    User.addUser(user);
                 });
                 net.start();
             } catch (IOException e) {

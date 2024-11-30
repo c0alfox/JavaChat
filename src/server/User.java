@@ -29,9 +29,7 @@ public class User {
                 }
 
                 user.net.send(new ResponseMessage("Non in un canale").toString());
-            });
-
-            user.net.on(CommandMessage.class, msg -> {
+            }).on(CommandMessage.class, msg -> {
                 user.net.send(new ResponseMessage().toString());
 
                 String syntaxErrorMessage = new ResponseMessage("Errore di sintassi del comando").toString();
