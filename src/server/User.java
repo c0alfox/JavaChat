@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class User {
     final ConnectionManager net;
-    String uname, color;
+    String channel = "", uname, color;
     static final HashMap<String, User> users = new HashMap<>();
 
     public static synchronized void addUser(User user) {
@@ -17,8 +17,39 @@ public class User {
             user.net.send(new ResponseMessage("Nome utente non disponibile").toString());
             user.net.close();
         } else {
-            user.net.on(OutboundMessage.class, msg -> user.net.send(new ResponseMessage().toString()));
-            user.net.on(CommandMessage.class, msg -> user.net.send(new ResponseMessage().toString()));
+            user.net.on(OutboundMessage.class, msg -> {
+                if (!user.channel.isEmpty()) {
+                    user.net.send(new ResponseMessage().toString());
+                    Channel.broadcastMessage(user, msg.msg);
+                }
+
+                user.net.send(new ResponseMessage("Non in un canale").toString());
+            });
+
+            user.net.on(CommandMessage.class, msg -> {
+                user.net.send(new ResponseMessage().toString());
+
+                String syntaxErrorMessage = new ResponseMessage("Errore di sintassi del comando").toString();
+                String[] parts = msg.cmd.split("[ \t]");
+
+                if (parts.length < 1) {
+                    user.net.send(syntaxErrorMessage);
+                    return;
+                }
+
+                if (parts.length == 2 && parts[0].equals("join")) {
+                    Channel.joinChannel(parts[1], user);
+                    return;
+                }
+
+                if (parts.length == 1 && parts[0].equals("leave")) {
+                    Channel.leaveChannel(user);
+                    return;
+                }
+
+                user.net.send(syntaxErrorMessage);
+            });
+
             user.net.send(new ResponseMessage().toString());
             users.put(user.uname, user);
         }
