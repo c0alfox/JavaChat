@@ -19,7 +19,9 @@ public class InboundMessage extends Message {
         return msg;
     }
 
-    public boolean getPrivate() { return isPrivate; }
+    public boolean getPrivate() {
+        return isPrivate;
+    }
 
     @Override
     public String toString() {

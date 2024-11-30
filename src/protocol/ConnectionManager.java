@@ -2,27 +2,27 @@ package protocol;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Optional;
-import java.util.Queue;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class ConnectionManager extends Connection {
+    final Queue<Consumer<Optional<String>>> responseCallbackQueue;
+    final Stack<Runnable> disposeRunnables;
     boolean active = true;
     HashMap<Class<? extends Message>, Consumer<? extends Message>> functionMappings;
-    final Queue<Consumer<Optional<String>>> responseCallbackQueue;
 
     public ConnectionManager(String target) throws IOException {
         super(target);
         functionMappings = new HashMap<>();
         responseCallbackQueue = new LinkedList<>();
+        disposeRunnables = new Stack<>();
     }
 
     public ConnectionManager(Socket s) throws IOException {
         super(s);
         functionMappings = new HashMap<>();
         responseCallbackQueue = new LinkedList<>();
+        disposeRunnables = new Stack<>();
     }
 
     public void start() {
@@ -49,6 +49,19 @@ public class ConnectionManager extends Connection {
         return responseCallbackQueue.poll();
     }
 
+    private void dispose() {
+        synchronized (disposeRunnables) {
+            close();
+            disposeRunnables.forEach(Runnable::run);
+        }
+    }
+
+    public void addDisposeRunnable(Runnable r) {
+        synchronized (disposeRunnables) {
+            disposeRunnables.push(r);
+        }
+    }
+
     private class ReceiveThread extends Thread {
         @Override
         public void run() {
@@ -56,7 +69,7 @@ public class ConnectionManager extends Connection {
                 try {
                     String payload = recv();
                     if (payload == null) {
-                        close();
+                        active = false;
                         continue;
                     }
 
@@ -70,12 +83,16 @@ public class ConnectionManager extends Connection {
                         System.out.println("Messaggio " + payload + " non gestito");
                     }
                 } catch (IOException e) {
-                    if (active) System.out.println("Errore nella ricezione del messaggio");
-                    close();
+                    if (active) {
+                        System.out.println("Errore nella ricezione del messaggio");
+                        active = false;
+                    }
                 } catch (Message.IllformedMessageException e) {
                     System.out.println("Messaggio malformato");
                 }
             }
+
+            dispose();
         }
     }
 }

@@ -8,9 +8,14 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class Channel {
+    private static final HashMap<String, Channel> channels = new HashMap<>();
     private final String name;
     private final Queue<User> users;
-    private static final HashMap<String, Channel> channels = new HashMap<>();
+
+    private Channel(String name) {
+        this.name = name;
+        users = new LinkedList<>();
+    }
 
     private synchronized static Channel getChannel(String name) {
         if (channels.containsKey(name)) {
@@ -61,10 +66,5 @@ public class Channel {
                 user.net.send(new InboundMessage(sender.uname, msg, false).toString());
             }
         }
-    }
-
-    private Channel(String name) {
-        this.name = name;
-        users = new LinkedList<>();
     }
 }

@@ -7,6 +7,7 @@ import java.io.IOException;
 public class Client {
     static ConnectionManager net;
     static String uname;
+    static String ucolor;
     static ClientUI ui;
 
     public static void main(String[] args) {

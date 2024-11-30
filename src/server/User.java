@@ -8,14 +8,19 @@ import protocol.ResponseMessage;
 import java.util.HashMap;
 
 public class User {
+    static final HashMap<String, User> users = new HashMap<>();
     final ConnectionManager net;
     String channel = "", uname, color;
-    static final HashMap<String, User> users = new HashMap<>();
+
+    public User(ConnectionManager net, String uname, String color) {
+        this.net = net;
+        this.uname = uname;
+        this.color = color;
+    }
 
     public static synchronized void addUser(User user) {
         if (users.containsKey(user.uname)) {
             user.net.send(new ResponseMessage("Nome utente non disponibile").toString());
-            user.net.close();
         } else {
             user.net.on(OutboundMessage.class, msg -> {
                 if (!user.channel.isEmpty()) {
@@ -57,11 +62,5 @@ public class User {
 
     public static synchronized void removeUser(User user) {
         users.remove(user.uname, user);
-    }
-
-    public User(ConnectionManager net, String uname, String color) {
-        this.net = net;
-        this.uname = uname;
-        this.color = color;
     }
 }

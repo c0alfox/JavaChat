@@ -9,6 +9,7 @@ import java.io.IOException;
 public class ClientUI extends JFrame {
     public final ChatPanel chatPanel;
     public final UserPanel userPanel;
+    boolean suspended;
 
     public ClientUI() {
         super("Java Chat");
@@ -16,6 +17,8 @@ public class ClientUI extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);
+
+        suspended = false;
 
         while (Client.net == null) {
             try {
@@ -39,18 +42,33 @@ public class ClientUI extends JFrame {
             }
         }
 
-        String uname = "";
-        String ucolor = "";
         while (Client.uname == null) {
             UserMessage u = UserCreationDialog.showUserCreationDialog();
-            if (u == null) {
+            if (u == null || u.uname.isBlank() || u.uname.isEmpty()) {
                 continue;
             }
 
-            Client.uname = u.uname;
-            Client.uname = uname = u.uname;
-            ucolor = u.color;
-            Client.net.send(u.toString(), msg -> { if (msg.isPresent()) System.out.println(msg); });
+            Client.net.send(u.toString(), error -> {
+                if (error.isEmpty()) {
+                    Client.uname = u.uname;
+                    Client.ucolor = u.color;
+                }
+                resume();
+            });
+
+            suspend();
+
+            synchronized (this) {
+                while (suspended) {
+                    try {
+                        System.out.println("printinz");
+                        wait();
+                        System.out.println("printfinz");
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
         }
 
         JSplitPane split = new JSplitPane(
@@ -58,7 +76,7 @@ public class ClientUI extends JFrame {
                 userPanel = new UserPanel(),
                 chatPanel = new ChatPanel()
         );
-        userPanel.addUser(uname, ucolor);
+        userPanel.addUser(Client.uname, Client.ucolor);
 
         add(split);
         setVisible(true);
@@ -66,5 +84,14 @@ public class ClientUI extends JFrame {
 
     public static Color borderColor(Color bgColor) {
         return new Color(0x11FFFFFF & (0xFFFFFFFF - bgColor.getRGB()));
+    }
+
+    public void suspend() {
+        suspended = true;
+    }
+
+    public synchronized void resume() {
+        suspended = false;
+        notify();
     }
 }

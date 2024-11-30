@@ -26,6 +26,7 @@ public class Server {
                 ConnectionManager net = new ConnectionManager(s);
                 net.on(UserMessage.class, msg -> {
                     User user = new User(net, msg.uname, msg.color);
+                    user.net.addDisposeRunnable(() -> User.removeUser(user));
                     User.addUser(user); // TODO: Remove user when connection is closed
                 });
                 net.start();
