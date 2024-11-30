@@ -8,8 +8,9 @@ public class ResponseMessage extends Message {
     public ResponseMessage(String substring) {
         msg = substring;
     }
-    public ResponseMessage(Optional<String> msg) {
-        this.msg = msg.orElse("OK");
+
+    public ResponseMessage() {
+        this.msg = "OK";
     }
 
     @Override
