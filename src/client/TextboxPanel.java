@@ -1,6 +1,8 @@
 package client;
 
+import protocol.CommandMessage;
 import protocol.InboundMessage;
+import protocol.Message;
 import protocol.OutboundMessage;
 
 import javax.swing.*;
@@ -61,13 +63,23 @@ public class TextboxPanel extends JPanel implements KeyListener, ActionListener 
             return;
         }
 
-        Client.net.send(new OutboundMessage(txt).toString(), msg -> {
+        String msgStr;
+        if (txt.startsWith("/")) {
+            msgStr = new CommandMessage(txt.substring(1)).toString();
+        } else {
+            msgStr = new OutboundMessage(txt).toString();
+        }
+
+        Client.net.send(msgStr, msg -> {
             if (msg.isPresent()) {
                 // TODO: Handle message sent on banned channel
+                System.out.println(msg.get());
                 return;
             }
 
-            parent.onMessage(new InboundMessage(Client.uname, txt, false));
+            if (!txt.startsWith("/")) {
+                parent.onMessage(new InboundMessage(Client.uname, txt, false));
+            }
         });
         textField.setText("");
     }

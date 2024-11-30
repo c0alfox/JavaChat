@@ -24,6 +24,8 @@ public class UserPanel extends JPanel {
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panel.add(label, gbc);
+
+        revalidate();
     }
 
     public void removeUser(String uname) {
@@ -34,5 +36,7 @@ public class UserPanel extends JPanel {
                 break;
             }
         }
+
+        revalidate();
     }
 }

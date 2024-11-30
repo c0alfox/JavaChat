@@ -76,7 +76,6 @@ public class ClientUI extends JFrame {
                 userPanel = new UserPanel(),
                 chatPanel = new ChatPanel()
         );
-        userPanel.addUser(Client.uname, Client.ucolor);
 
         add(split);
         setVisible(true);

@@ -1,7 +1,9 @@
 package server;
 
 import protocol.InboundMessage;
-import protocol.NowAdminMessage;
+import protocol.JoinMessage;
+import protocol.LeaveMessage;
+import protocol.Message;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -32,11 +34,11 @@ public class Channel {
         user.channel = channel;
 
         Channel ch = getChannel(user.channel);
+        broadcast(user.channel, new JoinMessage(user.uname, user.color));
 
         ch.users.offer(user);
-        if (ch.users.peek() == user) {
-            user.net.send(new NowAdminMessage().toString());
-        }
+
+        ch.users.forEach(other -> user.net.send(new JoinMessage(other.uname, other.color).toString()));
     }
 
     public synchronized static void leaveChannel(User user) {
@@ -45,26 +47,43 @@ public class Channel {
         }
 
         Channel ch = getChannel(user.channel);
-        boolean wasFirst = ch.users.peek() == user;
+        ch.users.forEach(other -> user.net.send(new LeaveMessage(other.uname).toString()));
         ch.users.remove(user);
+
+        broadcast(user.channel, new LeaveMessage(user.uname));
 
         if (ch.users.isEmpty()) {
             channels.remove(user.channel, ch);
-            return;
         }
 
-        if (wasFirst) {
-            ch.users.peek().net.send(new NowAdminMessage().toString());
-        }
+        user.channel = " ";
+        user.muted = false;
     }
 
-    public synchronized static void broadcastMessage(User sender, String msg) {
+    public synchronized static void broadcast(String name, Message msg) {
+        Channel ch = getChannel(name);
+
+        ch.users.forEach(user -> user.net.send(msg.toString()));
+    }
+
+    public synchronized static void broadcast(User sender, Message msg) {
         Channel ch = getChannel(sender.channel);
 
-        for (User user : ch.users) {
+        ch.users.forEach(user -> {
             if (user != sender) {
-                user.net.send(new InboundMessage(sender.uname, msg, false).toString());
+                user.net.send(msg.toString());
             }
-        }
+        });
+    }
+
+    public static void broadcastMessage(User sender, String msg) {
+        broadcast(sender, new InboundMessage(sender.uname, msg, false));
+    }
+
+
+    public synchronized static boolean isAdmin(User user) {
+        Channel ch = getChannel(user.channel);
+
+        return ch.users.peek() == user;
     }
 }

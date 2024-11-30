@@ -58,14 +58,6 @@ public abstract class Message {
             case 'd':
                 return new DeleteChannelMessage(msgString);
 
-            case 'A': {
-                if (!msgString.isEmpty()) {
-                    throw new IllformedMessageException();
-                }
-
-                return new NowAdminMessage();
-            }
-
             default:
                 throw new IllformedMessageException();
         }
