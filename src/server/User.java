@@ -3,6 +3,7 @@ package server;
 import protocol.CommandMessage;
 import protocol.ConnectionManager;
 import protocol.OutboundMessage;
+import protocol.ResponseMessage;
 
 import java.util.HashMap;
 
@@ -13,17 +14,12 @@ public class User {
 
     public static synchronized void addUser(User user) {
         if (users.containsKey(user.uname)) {
-            user.net.send("r Nome utente non disponibile");
+            user.net.send(new ResponseMessage("Nome utente non disponibile").toString());
             user.net.close();
         } else {
-            user.net.on(OutboundMessage.class, msg -> {
-                user.net.send("r OK");
-            });
-
-            user.net.on(CommandMessage.class, msg -> {
-                user.net.send("r OK");
-            });
-            user.net.send("r OK");
+            user.net.on(OutboundMessage.class, msg -> user.net.send(new ResponseMessage().toString()));
+            user.net.on(CommandMessage.class, msg -> user.net.send(new ResponseMessage().toString()));
+            user.net.send(new ResponseMessage().toString());
             users.put(user.uname, user);
         }
     }
