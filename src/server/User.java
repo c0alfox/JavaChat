@@ -10,8 +10,8 @@ import java.util.HashMap;
 public class User {
     static final HashMap<String, User> users = new HashMap<>();
     final ConnectionManager net;
-    String channel = "", uname, color;
     public boolean muted = false;
+    String channel = "", uname, color;
 
     public User(ConnectionManager net, String uname, String color) {
         this.net = net;

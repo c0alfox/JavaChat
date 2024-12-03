@@ -16,6 +16,7 @@ public class ClientUI extends JFrame {
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(800, 600);
+        setMinimumSize(new Dimension(400, 300));
         setLocationRelativeTo(null);
 
         suspended = false;
@@ -45,6 +46,10 @@ public class ClientUI extends JFrame {
         while (Client.uname == null) {
             UserMessage u = UserCreationDialog.showUserCreationDialog();
             if (u == null || u.uname.isBlank() || u.uname.isEmpty()) {
+                int out = JOptionPane.showConfirmDialog(null, "Sicuro di voler uscire?", "Conferma", JOptionPane.YES_NO_OPTION);
+                if (out == JOptionPane.OK_OPTION) {
+                    System.exit(1);
+                }
                 continue;
             }
 
@@ -52,7 +57,10 @@ public class ClientUI extends JFrame {
                 if (error.isEmpty()) {
                     Client.uname = u.uname;
                     Client.ucolor = u.color;
+                } else {
+                    JOptionPane.showMessageDialog(null, error.get(), "Errore", JOptionPane.ERROR_MESSAGE);
                 }
+
                 resume();
             });
 
@@ -61,9 +69,7 @@ public class ClientUI extends JFrame {
             synchronized (this) {
                 while (suspended) {
                     try {
-                        System.out.println("printinz");
                         wait();
-                        System.out.println("printfinz");
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
@@ -71,11 +77,13 @@ public class ClientUI extends JFrame {
             }
         }
 
-        JSplitPane split = new JSplitPane(
-                JSplitPane.HORIZONTAL_SPLIT,
+        ResizablePane split = new ResizablePane(
                 userPanel = new UserPanel(),
-                chatPanel = new ChatPanel()
+                chatPanel = new ChatPanel(),
+                (int) (getWidth() * 0.3)
         );
+
+        split.setMinimumSize(new Dimension(100, 0));
 
         add(split);
         setVisible(true);

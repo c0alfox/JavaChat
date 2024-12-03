@@ -22,7 +22,7 @@ public class Client {
                 .on(LeaveMessage.class, msg -> ui.userPanel.removeUser(msg.uname))
                 .on(ResponseMessage.class, msg -> net.pollCallback().accept(msg.toOptional()))
                 .addDisposeRunnable(() -> {
-                    JOptionPane.showConfirmDialog(null, "Connessione al server terminata");
+                    JOptionPane.showMessageDialog(null, "Connessione al server terminata");
                     System.exit(0);
                 });
 

@@ -2,7 +2,6 @@ package client;
 
 import protocol.CommandMessage;
 import protocol.InboundMessage;
-import protocol.Message;
 import protocol.OutboundMessage;
 
 import javax.swing.*;
@@ -72,8 +71,7 @@ public class TextboxPanel extends JPanel implements KeyListener, ActionListener 
 
         Client.net.send(msgStr, msg -> {
             if (msg.isPresent()) {
-                // TODO: Handle message sent on banned channel
-                System.out.println(msg.get());
+                parent.onMessage(new InboundMessage("<SERVER>", msg.get(), true));
                 return;
             }
 
