@@ -3,34 +3,54 @@ package client;
 import protocol.InboundMessage;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class MessageListPanel extends JPanel {
-    private final DefaultTableModel tableModel;
-    private final JTable table;
+    JPanel panel;
 
     public MessageListPanel() {
-        // Imposto la tabella dei messaggi con la colonna dei messaggi che occupa la maggior parte dello schermo
-        tableModel = new DefaultTableModel(0, 2);
-        table = new JTable(tableModel);
-
-        table.getColumnModel().getColumn(0).setPreferredWidth(100);
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
-
-        // Disabilito la selezione dei messaggi
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        table.setCellSelectionEnabled(false);
-
-        // Disabilito l'intestazione della tabella
-        table.getTableHeader().setVisible(false);
+        panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
 
         setLayout(new BorderLayout());
-        add(new JScrollPane(table));
+        add(new JScrollPane(panel), BorderLayout.NORTH);
     }
 
-    public void addMessage(InboundMessage imsg) {
+    public void addMessage(InboundMessage imsg, Color color) {
+        // TODO: Add Padding to gridbag
+        // TODO: Make text stick to the left
+        Font font = new Font("SansSerif", Font.PLAIN, 14);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+
+        panel.add(new JLabel(imsg.msg), gbc);
+
+        gbc.gridx = 0;
+        gbc.weightx = 0.2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
         String suffix = imsg.isPrivate ? " [whisper]" : "";
-        tableModel.addRow(new Object[]{imsg.uname + suffix, imsg.msg});
+
+        if (color == null) {
+            JLabel label = new JLabel(imsg.uname + suffix);
+            label.setFont(font);
+            panel.add(label, gbc);
+        } else {
+            OutlineLabel label = new OutlineLabel(imsg.uname + suffix);
+            label.setFont(font);
+            label.setForeground(color);
+            label.setOutlineColor(ClientUI.borderColor(getBackground()));
+            panel.add(label, gbc);
+        }
+
+        revalidate();
+    }
+
+    public void clear() {
+        for (Component comp : panel.getComponents()) {
+            panel.remove(comp);
+        }
+
+        revalidate();
     }
 }

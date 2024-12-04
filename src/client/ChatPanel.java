@@ -1,11 +1,13 @@
 package client;
 
 import protocol.InboundMessage;
+import protocol.JoinMessage;
+import protocol.LeaveMessage;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class ChatPanel extends JPanel {
+public class ChatPanel extends JPanel implements UserModelListener {
     private final TextboxPanel tbp;
     private final MessageListPanel mlp;
 
@@ -21,7 +23,20 @@ public class ChatPanel extends JPanel {
         setVisible(true);
     }
 
-    public synchronized void onMessage(InboundMessage imsg) {
-        mlp.addMessage(imsg);
+    public synchronized void onMessage(InboundMessage imsg, Color color) {
+        mlp.addMessage(imsg, color);
+    }
+
+    @Override
+    public void userAdded(JoinMessage j) {
+    }
+
+    @Override
+    public void userRemoved(LeaveMessage l) {
+    }
+
+    @Override
+    public void channelLeft() {
+        mlp.clear();
     }
 }

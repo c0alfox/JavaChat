@@ -71,12 +71,12 @@ public class TextboxPanel extends JPanel implements KeyListener, ActionListener 
 
         Client.net.send(msgStr, msg -> {
             if (msg.isPresent()) {
-                parent.onMessage(new InboundMessage("<SERVER>", msg.get(), true));
+                parent.onMessage(new InboundMessage("<SERVER>", msg.get(), true), null);
                 return;
             }
 
             if (!txt.startsWith("/")) {
-                parent.onMessage(new InboundMessage(Client.uname, txt, false));
+                parent.onMessage(new InboundMessage(Client.uname, txt, false), Client.ucolor);
             }
         });
         textField.setText("");

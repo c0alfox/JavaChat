@@ -1,9 +1,12 @@
 package client;
 
+import protocol.JoinMessage;
+import protocol.LeaveMessage;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class UserPanel extends JPanel {
+public class UserPanel extends JPanel implements UserModelListener {
     JPanel panel = new JPanel();
 
     public UserPanel() {
@@ -13,9 +16,9 @@ public class UserPanel extends JPanel {
         add(new JScrollPane(panel), BorderLayout.NORTH);
     }
 
-    public void addUser(String uname, String ucolor) {
-        Color color = new Color(Integer.parseInt(ucolor, 16));
-        OutlineLabel label = new OutlineLabel(uname);
+    public void userAdded(JoinMessage j) {
+        Color color = new Color(Integer.parseInt(j.color, 16));
+        OutlineLabel label = new OutlineLabel(j.uname, JLabel.CENTER);
         label.setForeground(color);
         label.setOutlineColor(ClientUI.borderColor(getBackground()));
         label.setFont(new Font("SansSerif", Font.PLAIN, 16));
@@ -28,15 +31,19 @@ public class UserPanel extends JPanel {
         revalidate();
     }
 
-    public void removeUser(String uname) {
+    public void userRemoved(LeaveMessage l) {
         for (Component comp : panel.getComponents()) {
             OutlineLabel label = (OutlineLabel) comp;
-            if (label.getText().equals(uname)) {
+            if (label.getText().equals(l.uname)) {
                 panel.remove(comp);
                 break;
             }
         }
 
         revalidate();
+    }
+
+    @Override
+    public void channelLeft() {
     }
 }

@@ -9,10 +9,13 @@ import java.io.IOException;
 public class ClientUI extends JFrame {
     public final ChatPanel chatPanel;
     public final UserPanel userPanel;
+    public final UserModel userModel;
     boolean suspended;
 
     public ClientUI() {
         super("Java Chat");
+
+        userModel = new UserModel();
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(800, 600);
@@ -21,6 +24,29 @@ public class ClientUI extends JFrame {
 
         suspended = false;
 
+        establishConnection();
+        login();
+
+        ResizablePane split = new ResizablePane(
+                userPanel = new UserPanel(),
+                chatPanel = new ChatPanel(),
+                (int) (getWidth() * 0.25)
+        );
+
+        userModel.addUserModelListener(userPanel);
+        userModel.addUserModelListener(chatPanel);
+
+        split.setMinimumSize(new Dimension(100, 0));
+
+        add(split);
+        setVisible(true);
+    }
+
+    public static Color borderColor(Color bgColor) {
+        return new Color(0x11FFFFFF & (0xFFFFFFFF - bgColor.getRGB()));
+    }
+
+    private void establishConnection() {
         while (Client.net == null) {
             try {
                 String input = JOptionPane.showInputDialog(null, "Inserisci l'indirizzo del server");
@@ -42,7 +68,9 @@ public class ClientUI extends JFrame {
                 );
             }
         }
+    }
 
+    private void login() {
         while (Client.uname == null) {
             UserMessage u = UserCreationDialog.showUserCreationDialog();
             if (u == null || u.uname.isBlank() || u.uname.isEmpty()) {
@@ -56,7 +84,7 @@ public class ClientUI extends JFrame {
             Client.net.send(u.toString(), error -> {
                 if (error.isEmpty()) {
                     Client.uname = u.uname;
-                    Client.ucolor = u.color;
+                    Client.ucolor = new Color(Integer.parseInt(u.color, 16));
                 } else {
                     JOptionPane.showMessageDialog(null, error.get(), "Errore", JOptionPane.ERROR_MESSAGE);
                 }
@@ -76,21 +104,6 @@ public class ClientUI extends JFrame {
                 }
             }
         }
-
-        ResizablePane split = new ResizablePane(
-                userPanel = new UserPanel(),
-                chatPanel = new ChatPanel(),
-                (int) (getWidth() * 0.25)
-        );
-
-        split.setMinimumSize(new Dimension(100, 0));
-
-        add(split);
-        setVisible(true);
-    }
-
-    public static Color borderColor(Color bgColor) {
-        return new Color(0x11FFFFFF & (0xFFFFFFFF - bgColor.getRGB()));
     }
 
     public void suspend() {
