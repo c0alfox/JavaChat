@@ -1,8 +1,6 @@
 package server;
 
-import protocol.Connection;
-import protocol.ConnectionManager;
-import protocol.UserMessage;
+import protocol.*;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -26,8 +24,22 @@ public class Server {
                 ConnectionManager net = new ConnectionManager(s);
                 net.on(UserMessage.class, msg -> {
                     User user = new User(net, msg.uname, msg.color);
-                    user.net.addDisposeRunnable(() -> User.removeUser(user));
+                    user.net.addDisposeRunnable(() -> {
+                        Channel.leaveChannel(user);
+                        User.removeUser(user);
+                    });
                     User.addUser(user);
+                }).on(IllformedMessage.class, msg -> {
+                    switch (msg.message.charAt(0)) {
+                        case 'o':
+                        case 'u':
+                        case 'c':
+                            net.send(new ResponseMessage("Messaggio Malformato").toString());
+                            break;
+
+                        default:
+                            System.out.println("Messaggio malformato monodirezionale");
+                    }
                 });
                 net.start();
             } catch (IOException e) {

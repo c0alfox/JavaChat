@@ -87,8 +87,6 @@ public class ConnectionManager extends Connection {
                         System.out.println("Errore nella ricezione del messaggio");
                         active = false;
                     }
-                } catch (Message.IllformedMessageException e) {
-                    System.out.println("Messaggio malformato");
                 }
             }
 

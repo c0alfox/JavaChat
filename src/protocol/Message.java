@@ -1,9 +1,10 @@
 package protocol;
 
 public abstract class Message {
-    public static Message create(String payload) throws IllformedMessageException {
+    public static Message create(String payload) {
+        payload = payload.strip();
         if (payload.isEmpty()) {
-            throw new IllformedMessageException();
+            return new IllformedMessage(payload);
         }
 
         String msgString = payload.substring(2);
@@ -12,7 +13,7 @@ public abstract class Message {
         switch (payload.charAt(0)) {
             case 'u': {
                 if (words.length != 2) {
-                    throw new IllformedMessageException();
+                    return new IllformedMessage(payload);
                 }
 
                 return new UserMessage(words[0], words[1]);
@@ -26,7 +27,7 @@ public abstract class Message {
 
             case 'j': {
                 if (words.length != 2) {
-                    throw new IllformedMessageException();
+                    return new IllformedMessage(payload);
                 }
 
                 return new JoinMessage(words[0], words[1]);
@@ -34,7 +35,7 @@ public abstract class Message {
 
             case 'l': {
                 if (words.length != 1) {
-                    throw new IllformedMessageException();
+                    return new IllformedMessage(payload);
                 }
 
                 return new LeaveMessage(words[0]);
@@ -43,7 +44,7 @@ public abstract class Message {
             case 'i':
             case 'p': {
                 if (words.length != 2) {
-                    throw new IllformedMessageException();
+                    return new IllformedMessage(payload);
                 }
 
                 return new InboundMessage(words[0], words[1], payload.charAt(0) == 'p');
@@ -59,10 +60,7 @@ public abstract class Message {
                 return new DeleteChannelMessage(msgString);
 
             default:
-                throw new IllformedMessageException();
+                return new IllformedMessage(payload);
         }
-    }
-
-    public static final class IllformedMessageException extends Exception {
     }
 }

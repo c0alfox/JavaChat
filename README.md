@@ -54,6 +54,24 @@ Un pacchetto di stato comincia per `s`.
 Un pacchetto di query comincia per `q`.
 
 
+## Diagramma di Connessione
+
+```mermaid
+sequenceDiagram
+participant Client
+participant Server
+
+Client->>Server: u username ff0000
+Server-->>Client: r OK
+Client->>Server: o message
+Server-->>Client: r Non sei connesso ad un canale
+Client->>Server: j canale
+Server-->>Client: j user ffff00
+Server-->>Client: j test abcdef
+Server-->>Client: j username ff0000
+Server-->>Client: r OK
+```
+
 
 Il protocollo si articola con messaggi testuali codificati in standard utf-8.
 

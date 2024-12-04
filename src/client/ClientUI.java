@@ -80,7 +80,7 @@ public class ClientUI extends JFrame {
         ResizablePane split = new ResizablePane(
                 userPanel = new UserPanel(),
                 chatPanel = new ChatPanel(),
-                (int) (getWidth() * 0.3)
+                (int) (getWidth() * 0.25)
         );
 
         split.setMinimumSize(new Dimension(100, 0));
