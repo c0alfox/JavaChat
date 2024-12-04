@@ -71,7 +71,14 @@ public class TextboxPanel extends JPanel implements KeyListener, ActionListener 
 
         Client.net.send(msgStr, msg -> {
             if (msg.isPresent()) {
-                parent.onMessage(new InboundMessage("<SERVER>", msg.get(), true), null);
+                String message = msg.get();
+
+                if (message.startsWith("OK")) {
+                    parent.channelJoined(message.substring(message.indexOf(' ') + 1));
+                    return;
+                }
+
+                parent.onMessage(new InboundMessage("<SERVER>", message, true), null);
                 return;
             }
 

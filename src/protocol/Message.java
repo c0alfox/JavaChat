@@ -43,11 +43,14 @@ public abstract class Message {
 
             case 'i':
             case 'p': {
-                if (words.length != 2) {
+                if (words.length < 2) {
                     return new IllformedMessage(payload);
                 }
 
-                return new InboundMessage(words[0], words[1], payload.charAt(0) == 'p');
+                return new InboundMessage(words[0],
+                        msgString.substring(msgString.indexOf(' ')),
+                        payload.charAt(0) == 'p'
+                );
             }
 
             case 'o':

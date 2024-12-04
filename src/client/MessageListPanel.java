@@ -13,7 +13,7 @@ public class MessageListPanel extends JPanel {
         panel.setLayout(new GridBagLayout());
 
         setLayout(new BorderLayout());
-        add(new JScrollPane(panel), BorderLayout.NORTH);
+        add(new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.NORTH);
     }
 
     public void addMessage(InboundMessage imsg, Color color) {
@@ -22,12 +22,23 @@ public class MessageListPanel extends JPanel {
         Font font = new Font("SansSerif", Font.PLAIN, 14);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 1;
+        gbc.weightx = 1;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        panel.add(new JLabel(imsg.msg), gbc);
+        JTextArea jta = new JTextArea(imsg.msg);
+        jta.setFont(font);
+        jta.setWrapStyleWord(true);
+        jta.setLineWrap(true);
+        jta.setEditable(false);
+        jta.setBackground(panel.getBackground());
+
+        panel.add(jta, gbc);
 
         gbc.gridx = 0;
         gbc.weightx = 0.2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.NONE;
 
         String suffix = imsg.isPrivate ? " [whisper]" : "";
 
