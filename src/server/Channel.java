@@ -88,15 +88,15 @@ public class Channel {
     }
 
     public synchronized static String[] getUsernames(String name) {
-        return (String[]) getChannel(name)
+        return getChannel(name)
                 .users
                 .stream().map(user -> user.uname)
-                .toArray();
+                .toArray(String[]::new);
     }
 
     public synchronized static String[] getChannels() {
-        return (String[]) channels
+        return channels
                 .keySet()
-                .toArray();
+                .toArray(String[]::new);
     }
 }

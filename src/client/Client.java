@@ -5,6 +5,8 @@ import protocol.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 public class Client {
     static ConnectionManager net;
@@ -25,8 +27,12 @@ public class Client {
         net.on(InboundMessage.class, msg -> ui.chatPanel.onMessage(msg, ui.userModel.getColor(msg.uname)))
                 .on(JoinMessage.class, msg -> ui.userModel.add(msg))
                 .on(LeaveMessage.class, msg -> ui.userModel.remove(msg))
-                .on(ResponseMessage.class, msg -> net.pollCallback().accept(msg.toOptional()))
-                .addDisposeRunnable(() -> {
+                .on(ResponseMessage.class, msg -> {
+                    Consumer<Optional<String>> callback = net.pollCallback();
+                    if (callback != null) {
+                        callback.accept(msg.toOptional());
+                    }
+                }).addDisposeRunnable(() -> {
                     JOptionPane.showMessageDialog(null, "Connessione al server terminata");
                     System.exit(0);
                 });

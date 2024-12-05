@@ -12,6 +12,7 @@ public class ChatPanel extends JPanel implements UserModelListener {
     private final TextboxPanel tbp;
     private final MessageListPanel mlp;
     private final JLabel channel;
+    private final JScrollBar vbar;
 
     public ChatPanel() {
         setLayout(new BorderLayout());
@@ -23,13 +24,17 @@ public class ChatPanel extends JPanel implements UserModelListener {
 
         add(channel, BorderLayout.NORTH);
         add(tbp, BorderLayout.SOUTH);
-        add(mlp);
+
+        JScrollPane scroll = new JScrollPane(mlp);
+        vbar = scroll.getVerticalScrollBar();
+        add(scroll);
 
         setVisible(true);
     }
 
     public synchronized void onMessage(InboundMessage imsg, Color color) {
         mlp.addMessage(imsg, color);
+        vbar.setValue(vbar.getMaximum());
     }
 
     @Override

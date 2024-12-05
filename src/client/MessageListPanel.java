@@ -13,12 +13,10 @@ public class MessageListPanel extends JPanel {
         panel.setLayout(new GridBagLayout());
 
         setLayout(new BorderLayout());
-        add(new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.NORTH);
+        add(panel, BorderLayout.NORTH);
     }
 
     public void addMessage(InboundMessage imsg, Color color) {
-        // TODO: Add Padding to gridbag
-        // TODO: Make text stick to the left
         Font font = new Font("SansSerif", Font.PLAIN, 14);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 1;
@@ -55,6 +53,7 @@ public class MessageListPanel extends JPanel {
         }
 
         revalidate();
+        repaint();
     }
 
     public void clear() {
@@ -63,5 +62,6 @@ public class MessageListPanel extends JPanel {
         }
 
         revalidate();
+        repaint();
     }
 }
