@@ -74,6 +74,20 @@ public class Command {
         user.net.send(new ResponseMessage().toString());
     }
 
+    public void runUsers() {
+        user.net.send(new ResponseMessage().toString());
+        user.net.send(InboundMessage.server(
+                String.join(", ", Channel.getUsernames(user.channel))
+        ).toString());
+    }
+
+    public void runChannels() {
+        user.net.send(new ResponseMessage().toString());
+        user.net.send(InboundMessage.server(
+                String.join(", ", Channel.getChannels())
+        ).toString());
+    }
+
     public void run() {
         if (parts.length == 2 && parts[0].equals("join")) {
             runJoin(parts[1]);
@@ -86,8 +100,12 @@ public class Command {
             runMute(parts[1]);
         } else if (parts.length == 2 && parts[0].equals("unmute")) {
             runUnmute(parts[1]);
+        } else if (parts.length == 1 && parts[0].equals("users")) {
+            runUsers();
+        } else if (parts.length == 1 && parts[0].equals("channels")) {
+            runChannels();
+        } else {
+            user.net.send(new ResponseMessage("Errore di sintassi del comando").toString());
         }
-
-        user.net.send(new ResponseMessage("Errore di sintassi del comando").toString());
     }
 }

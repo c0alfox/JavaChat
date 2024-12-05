@@ -11,16 +11,8 @@ public class InboundMessage extends Message {
         this.isPrivate = isPrivate;
     }
 
-    public String getUname() {
-        return uname;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public boolean getPrivate() {
-        return isPrivate;
+    public static InboundMessage server(String msg) {
+        return new InboundMessage("<SERVER>", msg, true);
     }
 
     @Override

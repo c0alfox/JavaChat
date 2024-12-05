@@ -86,4 +86,17 @@ public class Channel {
 
         return ch.users.peek() == user;
     }
+
+    public synchronized static String[] getUsernames(String name) {
+        return (String[]) getChannel(name)
+                .users
+                .stream().map(user -> user.uname)
+                .toArray();
+    }
+
+    public synchronized static String[] getChannels() {
+        return (String[]) channels
+                .keySet()
+                .toArray();
+    }
 }
