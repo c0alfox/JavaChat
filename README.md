@@ -33,7 +33,7 @@ La comunicazione avviene su porta 16384, il progetto contiene due classi java es
 
 Inizialmente viene richiesto un nome utente e un colore. Il nome utente deve essere unico nel server, senza spazi e non più lungo di 24 caratteri.
 
-La schermata principale della chat contiene due pannelli, il pannello sinistro contiene una un titolo che indica se è lista di canali o utenti. È lista di nomi di canali quando non si è connessi ad alcun canale altrimenti la lista di canali si tramuta in lista di utenti collegati al canale corrente.
+La schermata principale della chat contiene due pannelli, il pannello sinistro contiene un titolo che indica se è lista di canali o utenti. È lista di nomi di canali quando non si è connessi ad alcun canale altrimenti la lista di canali si tramuta in lista di utenti collegati al canale corrente.
 
 Quando si clicca su un canale dal pannello sinistro il testo della barra di immissione diventa `/join <nomecanale>`, dove nomecanale assume, ovviamente, il nome del canale selezionato. Quando, analogamente si clicca su un utente dalla lista, il testo della barra di immissione diventa `/whisper <nomeutente>`, sostituendo a `<nomeutente>` il nome utente selezionato.
 
@@ -186,11 +186,11 @@ Qualora il flusso TCP dovesse terminare per qualunque ragione, l'utente relativo
 # Todo
 
 - [ ] [Comandi utente](#comandi-utente)
-    - [ ] `/w`
-    - [ ] `/j`
-    - [ ] `/l`
-    - [ ] `/ch`
-    - [ ] `/exit`
+    - [x] `/w`
+    - [x] `/j`
+    - [x] `/l`
+    - [x] `/ch`
+    - [x] `/exit`
 - [ ] [Comandi canale](#comandi-canale)
 	- [ ] `/mychannel`
 - [ ] [Comandi per amministratori](#comandi-per-amministratori)

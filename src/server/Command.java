@@ -94,27 +94,30 @@ public class Command {
                 channels.length == 0
                         ? "Nessun canale"
                         : (channels.length + "canali: " + String.join(", ", channels)
-        )).toString());
+                )).toString());
     }
 
     public void run() {
-        if (parts.length == 2 && parts[0].equals("join")) {
+        if (parts.length == 2 && (parts[0].equals("j") || parts[0].equals("join"))) {
             runJoin(parts[1]);
-        } else if (parts.length == 1 && parts[0].equals("leave")) {
+        } else if (parts.length == 1 && (parts[0].equals("l") || parts[0].equals("leave"))) {
             runLeave();
         } else if (parts.length > 2 && (parts[0].equals("w") || parts[0].equals("whisper"))) {
             String[] newParts = cmd.split("[ \t]", 3);
             runWhisper(parts[1], newParts[2]);
-        } else if (parts.length == 2 && parts[0].equals("mute")) {
+        } else if (parts.length == 2 && (parts[0].equals("m") || parts[0].equals("mute"))) {
             runMute(parts[1]);
         } else if (parts.length == 2 && parts[0].equals("unmute")) {
             runUnmute(parts[1]);
         } else if (parts.length == 1 && parts[0].equals("users")) {
             runUsers();
-        } else if (parts.length == 1 && parts[0].equals("channels")) {
+        } else if (parts.length == 1 && (parts[0].equals("ch") || parts[0].equals("channels"))) {
             runChannels();
+        } else if (parts.length == 1 && parts[0].equals("exit")) {
+            user.net.send(new ResponseMessage("QUIT").toString());
         } else {
             user.net.send(new ResponseMessage("Errore di sintassi del comando").toString());
         }
+
     }
 }

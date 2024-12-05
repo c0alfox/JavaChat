@@ -53,4 +53,8 @@ public class User {
     public static synchronized void removeUser(User user) {
         users.remove(user.uname, user);
     }
+
+    public static synchronized User getUser(String username) {
+        return users.get(username);
+    }
 }

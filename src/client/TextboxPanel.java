@@ -78,6 +78,11 @@ public class TextboxPanel extends JPanel implements KeyListener, ActionListener 
                     return;
                 }
 
+                if (message.startsWith("QUIT")) {
+                    Client.net.close();
+                    return;
+                }
+
                 parent.onMessage(new InboundMessage("<SERVER>", message, true), null);
                 return;
             }
