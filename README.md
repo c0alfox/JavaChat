@@ -165,16 +165,18 @@ Caio ->> Server: c w Tizio Top Secret
 Server -->> Caio: r OK
 Server ->> Tizio: p Caio ff0000 Top Secret
 
-destroy Sempronio
 Sempronio ->> Server: c exit
+destroy Sempronio
+Server -->> Sempronio: QUIT
 
 Server ->> Caio: p Pluto 0000ff Messaggio esterno
 
 Server ->> Tizio: l Sempronio
 Server ->> Caio: 
 
-destroy Tizio
 Tizio ->> Server: c exit
+destroy Tizio
+Server -->> Tizio: QUIT
 
 
 ```
