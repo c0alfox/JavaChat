@@ -26,7 +26,9 @@ public class Command {
 
     User getUserInChannel(String uname) {
         User other;
-        if (!User.users.containsKey(uname) || user.channel.equals((other = User.users.get(uname)).channel)) {
+        if (user.uname.equals(uname)
+                || !User.users.containsKey(uname)
+                || !user.channel.equals((other = User.users.get(uname)).channel)) {
             return null;
         }
 
