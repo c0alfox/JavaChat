@@ -6,4 +6,9 @@ public class DeleteChannelMessage extends Message {
     public DeleteChannelMessage(String channelName) {
         this.channelName = channelName;
     }
+
+    @Override
+    public String toString() {
+        return "d " + channelName;
+    }
 }

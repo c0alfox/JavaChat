@@ -6,4 +6,9 @@ public class AddChannelMessage extends Message {
     public AddChannelMessage(String channelName) {
         this.channelName = channelName;
     }
+
+    @Override
+    public String toString() {
+        return "a " + channelName;
+    }
 }

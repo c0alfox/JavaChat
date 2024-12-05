@@ -14,7 +14,7 @@ public class UserPanel extends JPanel implements UserModelListener {
         setMinimumSize(new Dimension(260, 0));
 
         setLayout(new BorderLayout());
-        add(new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.NORTH);
+        add(panel, BorderLayout.NORTH);
     }
 
     public void userAdded(JoinMessage j) {

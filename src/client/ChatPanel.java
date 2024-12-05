@@ -25,7 +25,7 @@ public class ChatPanel extends JPanel implements UserModelListener {
         add(channel, BorderLayout.NORTH);
         add(tbp, BorderLayout.SOUTH);
 
-        JScrollPane scroll = new JScrollPane(mlp);
+        JScrollPane scroll = new JScrollPane(mlp, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         vbar = scroll.getVerticalScrollBar();
         add(scroll);
 

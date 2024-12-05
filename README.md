@@ -1,116 +1,206 @@
 # JavaChat
 
-Chat con interfaccia grafica in Java 
+Semplice chat Client Server in Java.
 
-## Protocollo di connessione
+# Indice
+
+- [JavaChat](#javachat)
+- [Indice](#indice)
+- [Connessione al server](#connessione-al-server)
+- [Interfaccia grafica](#interfaccia-grafica)
+- [Collegarsi a un canale](#collegarsi-a-un-canale)
+- [Reference per i comandi](#reference-per-i-comandi)
+	- [Comandi utente](#comandi-utente)
+	- [Comandi canale](#comandi-canale)
+	- [Comandi per amministratori](#comandi-per-amministratori)
+- [Protocollo di connessione](#protocollo-di-connessione)
+	- [Messaggi client](#messaggi-client)
+	- [Messaggi server](#messaggi-server)
+- [Diagramma di connessione](#diagramma-di-connessione)
+	- [Connessione e login](#connessione-e-login)
+	- [Comando](#comando)
+	- [Canale](#canale)
+	- [Disconnessione](#disconnessione)
+- [Todo](#todo)
+
+
+# Connessione al server
+
+La comunicazione avviene su porta 16384, il progetto contiene due classi java eseguibili: `Client` grafico Java Swing e `Server`.
+
+
+# Interfaccia grafica
+
+Inizialmente viene richiesto un nome utente e un colore. Il nome utente deve essere unico nel server, senza spazi e non più lungo di 24 caratteri.
+
+La schermata principale della chat contiene due pannelli, il pannello sinistro contiene una un titolo che indica se è lista di canali o utenti. È lista di nomi di canali quando non si è connessi ad alcun canale altrimenti la lista di canali si tramuta in lista di utenti collegati al canale corrente.
+
+Quando si clicca su un canale dal pannello sinistro il testo della barra di immissione diventa `/join <nomecanale>`, dove nomecanale assume, ovviamente, il nome del canale selezionato. Quando, analogamente si clicca su un utente dalla lista, il testo della barra di immissione diventa `/whisper <nomeutente>`, sostituendo a `<nomeutente>` il nome utente selezionato.
+
+Il pannello destro contiene una finestra di chat, con una barra di immissione, un tasto invia e una lista di messaggi che viene cancellata ogni volta che si entra in un canale, si esce da un canale, o lo si cambia.
+
+# Collegarsi a un canale
+
+Per collegarsi a un canale bisogna immettere il comando `/join <nomecanale>`. Il server notificherà con un messaggio tutti gli utenti presenti prima dell'entrata nel canale con un messaggio contenente: "`nomeutente` è entrato nel canale". Qualora ci si colleghi ad un canale non esistente, questo viene creato e l'utente vi si collega. In ogni momento l'utente collegato da più tempo ad un canale è l'amministratore ed ha accesso a comandi aggiuntivi (vedi [Comandi per amministratori](#comandi-per-amministratori)).
+
+Una volta che si è connessi ad un canale, si può scrivere messaggi che verranno inoltrati direttamente a tutti gli altri utenti del canale e si possono scrivere e ricevere [messaggi privati](#messaggi-privati). Si ha accesso anche ai comandi che trovi in [comandi canale](#comandi-canale).
+
+È possibile abbandonare un canale immettendo il comando `/leave`, tutti gli utenti restanti nel canale vengono notificati tramite un messaggio contenente: "`nomeutente` ha lasciato il canale".
+
+# Reference per i comandi
+
+## Comandi utente
+
+- `/join <nomecanale>`, permette di [collegarsi a un canale](#collegarsi-a-un-canale);
+- `/j <nomecanale>` alias di `/join`;
+- `/leave <nomecanale>`, permette di abbandonare un canale;
+- `/l` alias di `/leave`;
+- `/channels`, il server invia un messaggio privato che inizia per "Canali aperti: " e segue la lista di tutti i canali aperti. Qualora nessun canale fosse aperto, il messaggio privato contiene "Nessun canale è aperto";
+- `/ch` alias di `/channel`;
+- `/whisper <username> <messaggio>`, invia un messaggio privato all'utente `<username>` se esiste. Se il messaggio non viene recapitato, il server invia una risposta contenente il messaggio dell'errore, mentre se viene recapitato correttamente il server invia un messaggio privato all'utente che indica che il messaggio è stato recapitato con successo;
+- `/w` alias di `/whisper`;
+- `/exit` chiude la connessione.
+
+## Comandi canale
+
+- `/users`, il server risponderà con un messaggio privato che dice: "`N` utenti sono collegati:  `utente1`, `utente2`;
+- `/mychannel`, il server invierà un messaggio privato che dice: "Sei collegato a `nomecanale`", oppure: "Non sei collegato ad un canale".
+
+## Comandi per amministratori
+
+- `/mute <username>`, il server silenzia l'utente dal canale, quell'utente non potrà scrivere messaggi nel canale dell'amministratore. Il server, inoltre, invia all'utente destinatario un messaggio che dice: "Sei stato silenziato";
+- `/m <username>`, alias di `/mute;
+- `/unmute <username>`, il server toglie lo stato di muto dall'utente, quell'utente potrà tornare a scrivere messaggi nel canale dell'amministratore. Il server, inoltre, invia all'utente destinatario un messaggio che dice: "Non sei più silenziato";
+- `/mutelist <username>`, il server risponde con un messaggio privato all'amministratore contenente un elenco di tutti gli utenti silenziati nel canale corrente.
+
+
+# Protocollo di connessione
 
 Il protocollo scambia messaggi testuali codificati in utf-8. Ogni messaggio inizia con un carattere che ne indica la natura.
 
-I caratteri iniziali codificati nel protocollo sono:
+## Messaggi client
 
-- `m` (da message), vedi la sezione [messaggi pubblici](#messaggi-pubblici).
-- `p` (da private), vedi la sezione [messaggi privati](#messaggi-privati).
+I messaggi che cominciano con le seguenti lettere vengono inviati esclusivamente dal client.
 
-La sintassi dei messaggi del protocollo è espressa segue:
+- `c` (da command), formattato `c <stringa comando>`, la stringa di comando può contenere spazi, il comando è analizzato dal sever tra quelli nella sezione [reference comandi](#reference-per-i-comandi);
+- `o` (da outbound), formattato `o <messaggio>`, il messaggio può contenere spazi ma non linee a capo, rappresenta un messaggio pubblico indirizzato a tutti gli utenti del canale corrente;
+- `u` (da user), formattato `u <username> <colore>`, rappresenta la registrazione di un utente di nome `<username>`, senza spazi e lungo non più di 24 caratteri, e colore `<colore>`, una stringa esadecimale di 6 caratteri che rappresenta il colore in formato RGB.
 
-- il testo fuori dalle parentesi è sintassi fissa;
-- il testo in parentesi quadre `[]` è opzionale;
-- il testo in parentesi angolari `<>` è obbligatorio.
+## Messaggi server
 
-### Messaggi Pubblici
+I messaggi che cominciano con le seguenti lettere vengono inviati esclusivamente dal server.
 
-Un pacchetto messaggio comincia per `m`. la sua sintassi è `m <nome utente> <corpo del messaggio>`, dove:
+- `i` (da inbound), formattato `i <username> <messaggio>`, rappresenta un messaggio inviato dall'utente `<username>`;
+- `p` (da private), formattato  `p <username> <colore> <messaggio>`, rappresenta un messaggio privato in arrivo dall'utente `<username>`, di colore `<colore>`;
+- `a` (da add channel), formattato `a <nomecanale>`, rappresenta un nuovo canale attivo di nome `<nomecanale>`, da mostrare nella lista di canali del client;
+- `d` (da delete channel), formattato `d <nomecanale>`, rappresenta un canale eliminato di nome `<nomecanale>`, da rimuovere dalla lista di canali del client;
+- `j` (da join), formattato `j <username> <colore>`, rappresenta una notifica di connessione di un utente di nome `<username>` e colore `<colore>` (stringa esadecimale di 6 caratteri, che rappresenta un colore in RGB) connesso al canale corrente;
+- `l` (da leave), formattato `l <username>`, rappresenta una notifica di disconnessione di un utente di nome `<username>` dal canale corrente;
+- `r` (da response), formattato `r <messaggio>`, indica una risposta per un messaggio dal server a messaggi di tipo `c`, `o`, e `u`. Se la risposta è `OK`, la richiesta del client è andata a buon fine; se la risposta è `OK <testo>`, indica che il client si è collegato con successo al canale `<testo>`; se la risposta è `<testo>`, il messaggio è da interpretare come messaggio di errore. L'ordine di arrivo dei messaggi è garantito dal protocollo TCP, mentre il server dovrà garantire l'invio delle risposte nell'ordine di ricezione.
 
-- `<nome utente>` è un nome utente che deve essere valido, in caso non lo sia il messaggio è scartato;
-- `<messaggio>` è il corpo del messaggio.
+# Diagramma di connessione
 
-Così che:
+## Connessione e login
 
-`m <nome utente> <messaggio>` inviato dal server al client, rappresenta un messaggio in arrivo nel canale attuale da parte di `<nome utente>`;
-
-`m <messaggio>` inviato dal client al server 
-
-
-### Messaggi privati
-
-Un pacchetto messaggio privato comincia per `p`. La sua sintassi è `p <target> <corpo del messaggio>`, dove:
-
-- `<target>` è il nome utente del destinarario o del mittente, in caso non sia valido il messaggio è scartato;
-- `<corpo del messaggio>` è il corpo del messaggio;
-
-Così che:
-
-`p <target> <messaggio>` inviato dal client al server, rappresenta un messaggio privato inviato dall'utente attuale a `<target>`;
-
-`p <target> <messaggio>` inviato dal server al client, rappresenta un messaggio privato inviato da `<target>` all'utente attuale.
-
-
-### Stato
-
-Un pacchetto di stato comincia per `s`.
-
-### Query
-
-Un pacchetto di query comincia per `q`.
-
-
-## Diagramma di Connessione
+La prima fase della connessione, il server si assicura che ogni utente abbia uno username univoco e che i colori siano stringhe esadecimali valide di 6 caratteri.
 
 ```mermaid
 sequenceDiagram
-participant Client
+actor Pippo
 participant Server
+actor Pluto
 
-Client->>Server: u username ff0000
-Server-->>Client: r OK
-Client->>Server: o message
-Server-->>Client: r Non sei connesso ad un canale
-Client->>Server: j canale
-Server-->>Client: j user ffff00
-Server-->>Client: j test abcdef
-Server-->>Client: j username ff0000
-Server-->>Client: r OK
+Pippo ->> Server: u Pippo ff0000
+Pluto ->> Server: u Pippo ff00ff
+Server -->> Pippo: r OK
+Server -->> Pluto: r Nome utente esistente
+Pluto ->> Server: u Pluto fg0000
+Server -->> Pluto: r Colore non valido
+Pluto ->> Server: u Pluto 0000ff
+Server -->> Pluto: r OK
 ```
 
+## Comando
 
-Il protocollo si articola con messaggi testuali codificati in standard utf-8.
+In questa fase del collegamento, il client può solo inviare dei comandi o messaggi privati, in quanto non fa parte di un canale. Nel diagramma di sotto è riportata, oltre all'esecuzione di un comando `/ch`, la connessione al canale `test`.
 
-Ogni messaggio è strutturato come segue: `<carattere iniziale> <corpo del messaggio>`
+```mermaid
+sequenceDiagram
+actor Pippo
+participant Server
 
-Il carattere iniziale è codificato e può assumere solo i seguenti valori:
+Pippo ->> Server: c ch
+Pippo ->> Server: c join test
+Server -->> Pippo: r OK
+Server ->> Pippo: p <SERVER> Nessun canale aperto
+Server ->> Pippo: j <username> <colore>
+Server ->> Pippo: 
+Server ->> Pippo: 
+Server ->> Pippo: 
+Note right of Server: 1 per utente
+Server -->> Pippo: r OK test
 
-<!-- FIX: È inutile che il messaggio dell'utente contenga lo username -->
-<!-- FIX: È impossibile modificare l'username -->
+```
 
-- `c` (da command) - Il client invia al server `c <stringa comando>` e il server risponderà secondo le specifiche alla sezione [comandi](#comandi);
-- `m` (da message) - Se il client invia al server `m <username> <messaggio>`, il messaggio verrà inviato a chiunque è connesso allo stesso canale dell'utente. Se il server invia un pacchetto formato analogamente, allora il client dovrà interpretarlo come messaggio in arrivo;
-- `p` (da private) - Se il server invia al client `p <source> <messaggio>`, il client tratterà il messaggio come un messaggio privato da un singolo utente;
-- `s` (da suggestion) - Il comando suggestion è formattato come segue `s <categoria> <n>`. Se è inviato dal client, rappresenta una richiesta di n elementi da parte del server, se ritornato dal server invia, segue una lista di dati strutturati come da sezione [categorie](#categorie);
-- `j` (da join) - Il server invia `j <username> <colore>` ad ogni client collegato ad un canale dove si è aggiunto un nuovo membro, dove username è il nome utente e color è un codice di 6 cifre esadecimali che rappresenta il colore associato all'utente;
-- `l` (da leave) - Il server invia `l <username>` ad ogni client collegato ad un canale dove un membro ha appena abbandonato;
-- `u` (da update) - Il server invia `u <username> <colore>` ad ogni client collegato ad un canale dove un utente ha deciso di modificare il suo colore associato;
-- `d` (da data) - Il server invia `d <n> ` seguito da $n$ coppie di `<username> <colore>` intervallate da spazi singoli, a indicare gli utenti presenti in un canale;
-- `e` (da error) - Il server invia `e <stringa di errore>` in caso di un qualunque errore.
+## Canale
 
-## Comandi
+Esempio di conversazione tra 3 utenti collegati allo stesso canale. Durante la conversazione il server potrebbe inviare notifiche di altro genere, come `a` (add channel), messaggio privato da un utente non connesso al canale 
 
-I comandi sono interpretati in maniera case insensitive e cominciano tutti con il carattere `/`. Il server riceverà solo ed esclusivamente la stringa di comando, ovvero la parte successiva al carattere `/`.
+```mermaid
+sequenceDiagram
+actor Tizio
+actor Caio
+actor Sempronio
+participant Server
 
-Sono comandi validi:
-- `/join <nome canale>`, serve a entrare in un canale o a cambiare il canale attuale. L'utente può chattare su un canale per volta. `<nome canale>` deve essere una stringa senza spazi, altrimenti il server restituisce un errore.
-- `/channels`, mostra la lista dei canali aperti;
-- `/mychannel`, ritorna il nome del canale attuale;
-- `/users`, ritorna la lista di utenti collegati al canale attuale;
-- `/whisper <nome utente> <messaggio>`, invia un messaggio privato all'utente specificato.
+Sempronio ->> Server: c w Pippo Top Secret
+Server -->> Sempronio: r Utente Inesistente
 
-L'utente più anziano di un canale è sempre l'amministratore. L'amministratore ha accesso ai seguenti comandi:
-- `/ban <nome utente>`, l’utente specificato sarà bannato: continua a restare nel cannale, ma non potrà scrivere nulla. Se un client bannato prova a scrivere qualcosa, il server lo informa che è bannato. L’amministratore non deve potersi bananare da solo;
-- `/unban <nome utente>`, l’utente specificato potrà riprendere a inviare messaggi dentro la chat;
-- `/banlist`, visualizza la lista degli utenti bannati.
+Sempronio ->> Server: o Ciao
+Server -->> Sempronio: r OK
+Server ->> Tizio: i Sempronio Ciao
+Server ->> Caio: 
 
-## Categorie
+Caio ->> Server: c w Tizio Top Secret
+Server -->> Caio: r OK
+Server ->> Tizio: p Caio ff0000 Top Secret
 
-Sono categorie valide:
-- `c` (da channel), il server ritorna $n$ stringhe separate da spazi che rappresentano i nomi dei canali attivi;
-- `u` (da users), il server ritorna una lista di $n$ utenti indicati da una coppia `<nome utente> <colore>`;
-- `m` (da command), il server ritorna una lista di $n$ comandi accettabili strutturati come `<nome> <descrizione>`, separati da doppio spazio. La descrizione comincia con i parametri del comando.
+destroy Sempronio
+Sempronio ->> Server: c exit
+
+Server ->> Caio: p Pluto 0000ff Messaggio esterno
+
+Server ->> Tizio: l Sempronio
+Server ->> Caio: 
+
+destroy Tizio
+Tizio ->> Server: c exit
+
+
+```
+
+## Disconnessione
+
+Qualora il flusso TCP dovesse terminare per qualunque ragione, l'utente relativo è da considerare disconnesso a tutti gli effetti, rimosso dal canale (se era connesso ad uno), dalla lista degli utenti e da ovunque vi siano riferimenti all'utente, in modo da permettere al garbage collector di de-allocare l'istanza dell'utente dal server.
+
+# Todo
+
+- [ ] [Comandi utente](#comandi-utente)
+    - [ ] `/w`
+    - [ ] `/j`
+    - [ ] `/l`
+    - [ ] `/ch`
+    - [ ] `/exit`
+- [ ] [Comandi canale](#comandi-canale)
+	- [ ] `/mychannel`
+- [ ] [Comandi per amministratori](#comandi-per-amministratori)
+	- [ ] `/mute`
+	- [ ] `/m`
+	- [ ] `/unmute`
+	- [ ] `/mutelist`
+- [ ] [Protocollo di connessione](#protocollo-di-connessione)
+    - [ ] `a` (da add channel)
+    - [ ] `d` (da delete channel)
+- [ ] misc
+    - [ ] Implementare un controllo se il colore inviato è un colore valido. Se un utente malevolo dovesse interferire con il protocollo, il server crasherebbe provocando DoS.
+    - [ ] Come implementiamo un messaggio privato da un utente che non è connesso al canale attuale? Da dove prendiamo il suo colore?
