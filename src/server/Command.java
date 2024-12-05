@@ -75,17 +75,26 @@ public class Command {
     }
 
     public void runUsers() {
+        String[] unames = Channel.getUsernames(user.channel);
+        if (unames == null) {
+            user.net.send(new ResponseMessage("Non sei in un canale").toString());
+            return;
+        }
+
         user.net.send(new ResponseMessage().toString());
-        user.net.send(InboundMessage.server(
-                String.join(", ", Channel.getUsernames(user.channel))
-        ).toString());
+        user.net.send(InboundMessage.server(unames.length + "utenti: " + String.join(", ", unames))
+                .toString());
     }
 
     public void runChannels() {
+        String[] channels = Channel.getChannels();
         user.net.send(new ResponseMessage().toString());
+
         user.net.send(InboundMessage.server(
-                String.join(", ", Channel.getChannels())
-        ).toString());
+                channels.length == 0
+                        ? "Nessun canale"
+                        : (channels.length + "canali: " + String.join(", ", channels)
+        )).toString());
     }
 
     public void run() {

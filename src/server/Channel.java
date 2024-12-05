@@ -88,6 +88,10 @@ public class Channel {
     }
 
     public synchronized static String[] getUsernames(String name) {
+        if (name.isEmpty()) {
+            return null;
+        }
+
         return getChannel(name)
                 .users
                 .stream().map(user -> user.uname)
