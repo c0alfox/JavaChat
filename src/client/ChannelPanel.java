@@ -36,6 +36,7 @@ public class ChannelPanel extends JPanel {
         panel.add(label, gbc);
 
         revalidate();
+        repaint();
     }
 
     public void channelRemoved(DeleteChannelMessage msg) {
@@ -48,5 +49,6 @@ public class ChannelPanel extends JPanel {
         }
 
         revalidate();
+        repaint();
     }
 }

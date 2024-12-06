@@ -56,7 +56,9 @@ public abstract class Message {
                     return new IllformedMessage(payload);
                 }
 
-                return new PrivateMessage(words[0], words[1], (msgString.split(" ", 4))[3]);
+                String s = msgString.substring(msgString.indexOf(' ', msgString.indexOf(' ') + 1));
+                System.out.println(s);
+                return new PrivateMessage(words[0], words[1], s);
             }
 
             case 'o':

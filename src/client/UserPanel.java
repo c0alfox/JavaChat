@@ -39,6 +39,7 @@ public class UserPanel extends JPanel implements UserModelListener {
         panel.add(label, gbc);
 
         revalidate();
+        repaint();
     }
 
     public void userRemoved(LeaveMessage l) {
@@ -51,6 +52,7 @@ public class UserPanel extends JPanel implements UserModelListener {
         }
 
         revalidate();
+        repaint();
     }
 
     @Override

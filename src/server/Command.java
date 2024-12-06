@@ -69,9 +69,9 @@ public class Command {
             return;
         }
 
+        Channel.broadcast(parts[1], InboundMessage.server(user.uname + " è entrato nel canale"));
         Channel.joinChannel(parts[1], user);
         user.net.send(new ResponseMessage("OK " + parts[1]).toString());
-        Channel.broadcast(user.channel, InboundMessage.server(user.uname + " è entrato nel canale"));
     }
 
     void leave() {
@@ -80,9 +80,9 @@ public class Command {
             return;
         }
 
-        user.net.send(new ResponseMessage().toString());
         Channel.broadcast(user.channel, InboundMessage.server(user.uname + " è uscito dal canale"));
         Channel.leaveChannel(user);
+        user.net.send(new ResponseMessage().toString());
     }
 
     void whisper() {

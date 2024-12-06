@@ -19,9 +19,12 @@ public class MessageListPanel extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 1;
         gbc.weightx = 1;
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.weighty = 1;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(5, 5, 5, 15);
         gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.BOTH;
 
         JTextArea jta = new JTextArea(msg);
         jta.setFont(font);
@@ -30,11 +33,9 @@ public class MessageListPanel extends JPanel {
         jta.setEditable(false);
         jta.setBackground(panel.getBackground());
 
-        panel.add(jta, gbc);
-
         gbc.gridx = 0;
         gbc.weightx = 0.2;
-        gbc.fill = GridBagConstraints.NONE;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         String suffix = priv ? " [whisper]" : "";
 

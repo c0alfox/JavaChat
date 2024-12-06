@@ -64,13 +64,16 @@ public class ChatPanel extends JPanel implements UserModelListener {
         Client.ui.sideScrollPanel.setViewportView(Client.ui.channelPanel);
         Client.ui.sidePanelLabel.setText(ClientUI.channelSidePanelLabel);
         Client.ui.sidePanel.revalidate();
+        Client.ui.sidePanel.repaint();
     }
 
     public void channelJoined(String name) {
+        mlp.clear();
         channel.setText("#" + name);
         Client.ui.sideScrollPanel.setViewportView(Client.ui.userPanel);
         Client.ui.sidePanelLabel.setText(ClientUI.userSidePanelLabel);
         Client.ui.sidePanel.revalidate();
+        Client.ui.sidePanel.repaint();
     }
 
     public void setText(String s) {

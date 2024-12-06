@@ -42,7 +42,7 @@ public class ClientUI extends JFrame {
         sidePanel = new JPanel();
         sidePanel.setLayout(new BorderLayout());
 
-        sidePanelLabel = new JLabel(channelSidePanelLabel);
+        sidePanelLabel = new JLabel(channelSidePanelLabel, JLabel.CENTER);
         sidePanelLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
 
         sideScrollPanel = new JScrollPane(channelPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
