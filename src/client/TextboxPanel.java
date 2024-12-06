@@ -1,6 +1,7 @@
 package client;
 
 import protocol.CommandMessage;
+import protocol.InboundMessage;
 import protocol.OutboundMessage;
 import protocol.PrivateMessage;
 
@@ -88,7 +89,7 @@ public class TextboxPanel extends JPanel implements KeyListener, ActionListener 
             }
 
             if (!txt.startsWith("/")) {
-                parent.onMessage(new PrivateMessage(Client.uname, Client.ucolorstr, txt));
+                parent.onMessage(new InboundMessage(Client.uname, txt), Client.ucolor);
             }
         });
         textField.setText("");

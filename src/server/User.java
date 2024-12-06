@@ -45,8 +45,8 @@ public class User {
             user.net.send(new ResponseMessage("Non in un canale").toString());
         }).on(CommandMessage.class, msg -> new Command(user, msg.cmd).run());
 
-        Channel.newUser(user);
         user.net.send(new ResponseMessage().toString());
+        Channel.newUser(user);
         users.put(user.uname, user);
     }
 

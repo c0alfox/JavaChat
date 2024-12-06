@@ -59,7 +59,8 @@ Una volta che si è connessi ad un canale, si può scrivere messaggi che verrann
 - `/ch` alias di `/channel`;
 - `/whisper <username> <messaggio>`, invia un messaggio privato all'utente `<username>` se esiste. Se il messaggio non viene recapitato, il server invia una risposta contenente il messaggio dell'errore, mentre se viene recapitato correttamente il server invia un messaggio privato all'utente che indica che il messaggio è stato recapitato con successo;
 - `/w` alias di `/whisper`;
-- `/exit` chiude la connessione.
+- `/whoami`, il server risponde con un messaggio privato contenente il solo nome utente;
+- `/exit` chiude il client.
 
 ## Comandi canale
 
@@ -113,11 +114,19 @@ actor Pluto
 Pippo ->> Server: u Pippo ff0000
 Pluto ->> Server: u Pippo ff00ff
 Server -->> Pippo: r OK
+Server ->> Pippo: a nomecanale
+Server ->> Pippo: 
+Server ->> Pippo: 
+Note over Pippo, Server: 1 per canale esistente
 Server -->> Pluto: r Nome utente esistente
 Pluto ->> Server: u Pluto fg0000
 Server -->> Pluto: r Colore non valido
 Pluto ->> Server: u Pluto 0000ff
 Server -->> Pluto: r OK
+Server ->> Pluto: a nomecanale
+Server ->> Pluto: 
+Server ->> Pluto: 
+Note over Pluto, Server: 1 per canale esistente
 ```
 
 ## Comando
@@ -185,27 +194,3 @@ Server -->> Tizio: QUIT
 ## Disconnessione
 
 Qualora il flusso TCP dovesse terminare per qualunque ragione, l'utente relativo è da considerare disconnesso a tutti gli effetti, rimosso dal canale (se era connesso ad uno), dalla lista degli utenti e da ovunque vi siano riferimenti all'utente, in modo da permettere al garbage collector di de-allocare l'istanza dell'utente dal server.
-
-# Todo
-
-- [x] [Comandi utente](#comandi-utente)
-    - [x] `/w`
-    - [x] `/j`
-    - [x] `/l`
-    - [x] `/ch`
-    - [x] `/exit`
-- [x] [Comandi canale](#comandi-canale)
-	- [x] `/mychannel`
-- [x] [Comandi per amministratori](#comandi-per-amministratori)
-	- [x] `/mute`
-	- [x] `/m`
-	- [x] `/unmute`
-	- [x] `/mutelist`
-- [x] [Protocollo di connessione](#protocollo-di-connessione)
-    - [x] `a` (da add channel)
-    - [x] `d` (da delete channel)
-- [ ] misc
-    - [x] Implementare un controllo se il colore inviato è un colore valido. Se un utente malevolo dovesse interferire con il protocollo, il server crasherebbe provocando DoS.
-    - [x] Come implementiamo un messaggio privato da un utente che non è connesso al canale attuale? Da dove prendiamo il suo colore?
-    - [x] Mute overhaul
-    - [ ] Implementare il pannello laterale lato client

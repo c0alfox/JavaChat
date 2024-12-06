@@ -32,10 +32,12 @@ public class Command {
         put("mychannel", Command::myChannel);
 
         put("users", Command::users);
+        put("whoami", Command::whoami);
 
         put("quit", Command::exit);
         put("exit", Command::exit);
     }};
+
     public final String cmd;
     public final String[] parts;
     public final User user;
@@ -89,10 +91,12 @@ public class Command {
             return;
         }
 
-        String[] p = cmd.split("[ \t]", 3);
-        String uname = p[0];
-        String msg = p[1];
+        String uname = parts[1];
+        String msg = cmd.substring(cmd.indexOf(' ', cmd.indexOf(' ') + 1));
 
+        System.out.println(uname);
+        System.out.println(user.uname);
+        System.out.println(uname.equals(user.uname));
         if (uname.equals(user.uname)) {
             user.net.send(new ResponseMessage("Non puoi sussurrare a te stesso").toString());
             return;
@@ -217,7 +221,7 @@ public class Command {
         user.net.send(PrivateMessage.server(
                 channels.length == 0
                         ? "Nessun canale"
-                        : (channels.length + "canali: " + String.join(", ", channels)
+                        : (channels.length + " canali: " + String.join(", ", channels)
                 )).toString());
     }
 
@@ -241,6 +245,16 @@ public class Command {
         }
 
         user.net.send(new ResponseMessage("QUIT").toString());
+    }
+
+    public void whoami() {
+        if (parts.length != 1) {
+            syntaxError();
+            return;
+        }
+
+        user.net.send(new ResponseMessage().toString());
+        user.net.send(PrivateMessage.server(user.uname).toString());
     }
 
     public void run() {
