@@ -2,8 +2,6 @@ package client;
 
 import protocol.AddChannelMessage;
 import protocol.DeleteChannelMessage;
-import protocol.JoinMessage;
-import protocol.LeaveMessage;
 
 import javax.swing.*;
 import java.awt.*;

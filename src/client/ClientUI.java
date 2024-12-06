@@ -12,11 +12,11 @@ public class ClientUI extends JFrame {
 
     public final ChatPanel chatPanel;
     public final UserPanel userPanel;
+    public final ChannelPanel channelPanel;
+    public final UserModel userModel;
     JLabel sidePanelLabel;
     JPanel sidePanel;
     JScrollPane sideScrollPanel;
-    public final ChannelPanel channelPanel;
-    public final UserModel userModel;
     boolean suspended;
 
     public ClientUI() {
