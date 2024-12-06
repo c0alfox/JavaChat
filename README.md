@@ -204,5 +204,6 @@ Qualora il flusso TCP dovesse terminare per qualunque ragione, l'utente relativo
     - [ ] `a` (da add channel)
     - [ ] `d` (da delete channel)
 - [ ] misc
-    - [ ] Implementare un controllo se il colore inviato è un colore valido. Se un utente malevolo dovesse interferire con il protocollo, il server crasherebbe provocando DoS.
+    - [x] Implementare un controllo se il colore inviato è un colore valido. Se un utente malevolo dovesse interferire con il protocollo, il server crasherebbe provocando DoS.
     - [ ] Come implementiamo un messaggio privato da un utente che non è connesso al canale attuale? Da dove prendiamo il suo colore?
+    - [ ] Mute overhaul
