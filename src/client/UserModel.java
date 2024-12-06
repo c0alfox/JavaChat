@@ -12,7 +12,6 @@ public class UserModel {
     private final ArrayList<UserModelListener> userModelListeners;
 
     public UserModel() {
-        super();
         userList = new HashMap<>();
         userModelListeners = new ArrayList<>();
     }

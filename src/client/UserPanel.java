@@ -10,9 +10,9 @@ public class UserPanel extends JPanel implements UserModelListener {
     JPanel panel = new JPanel();
 
     public UserPanel() {
-        panel.setLayout(new GridBagLayout());
-
         setLayout(new BorderLayout());
+
+        panel.setLayout(new GridBagLayout());
         add(panel, BorderLayout.NORTH);
     }
 
