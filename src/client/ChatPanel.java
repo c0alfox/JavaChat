@@ -39,7 +39,12 @@ public class ChatPanel extends JPanel implements UserModelListener {
     }
 
     public synchronized void onMessage(PrivateMessage msg) {
-        mlp.addMessage(msg.msg, msg.uname, new Color(Integer.parseInt(msg.color, 16)), true);
+        Color c = null;
+        try {
+            c = new Color(Integer.parseInt(msg.color, 16));
+        } catch (NumberFormatException ignored) {
+        }
+        mlp.addMessage(msg.msg, msg.uname, c, true);
         vbar.setValue(vbar.getMaximum());
     }
 
@@ -66,5 +71,9 @@ public class ChatPanel extends JPanel implements UserModelListener {
         Client.ui.sideScrollPanel.setViewportView(Client.ui.userPanel);
         Client.ui.sidePanelLabel.setText(ClientUI.userSidePanelLabel);
         Client.ui.sidePanel.revalidate();
+    }
+
+    public void setText(String s) {
+        tbp.setText(s);
     }
 }

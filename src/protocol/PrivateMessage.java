@@ -12,7 +12,7 @@ public class PrivateMessage extends Message {
     }
 
     public static PrivateMessage server(String msg) {
-        return new PrivateMessage("<SERVER>", "000000", msg);
+        return new PrivateMessage("<SERVER>", "NULL", msg);
     }
 
     @Override

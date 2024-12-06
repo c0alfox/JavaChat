@@ -5,6 +5,8 @@ import protocol.DeleteChannelMessage;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class ChannelPanel extends JPanel {
     JPanel panel = new JPanel();
@@ -19,6 +21,14 @@ public class ChannelPanel extends JPanel {
     public void channelAdded(AddChannelMessage msg) {
         Label label = new Label(msg.channelName, JLabel.CENTER);
         label.setFont(new Font("SansSerif", Font.BOLD, 16));
+
+        label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        label.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Client.ui.chatPanel.setText("/join " + label.getText());
+            }
+        });
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;

@@ -94,4 +94,8 @@ public class TextboxPanel extends JPanel implements KeyListener, ActionListener 
         });
         textField.setText("");
     }
+
+    public void setText(String s) {
+        textField.setText(s);
+    }
 }
