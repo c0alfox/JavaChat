@@ -1,9 +1,11 @@
 package server;
 
 import protocol.InboundMessage;
+import protocol.PrivateInboundMessage;
 import protocol.ResponseMessage;
 
 import java.util.Hashtable;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class Command {
@@ -67,6 +69,7 @@ public class Command {
 
         Channel.joinChannel(parts[1], user);
         user.net.send(new ResponseMessage("OK " + parts[1]).toString());
+        Channel.broadcast(user.channel, InboundMessage.server(user.uname + " è entrato nel canale"));
     }
 
     void leave() {
@@ -77,6 +80,7 @@ public class Command {
 
         Channel.leaveChannel(user);
         user.net.send(new ResponseMessage().toString());
+        Channel.broadcast(user.channel, InboundMessage.server(user.uname + " è uscito dal canale"));
     }
 
     void whisper() {
@@ -101,7 +105,7 @@ public class Command {
         }
 
         user.net.send(new ResponseMessage().toString());
-        other.net.send(new InboundMessage(user.uname, msg, true).toString());
+        other.net.send(new PrivateInboundMessage(user.uname, msg).toString());
     }
 
     void mute() {
@@ -128,8 +132,8 @@ public class Command {
 
         MuteManager.mute(other, user.channel);
         user.net.send(new ResponseMessage().toString());
-        user.net.send(InboundMessage.server("Utente " + other.uname + " silenziato").toString());
-        other.net.send(InboundMessage.server("Sei stato silenziato").toString());
+        user.net.send(PrivateInboundMessage.server("Utente " + other.uname + " silenziato").toString());
+        other.net.send(PrivateInboundMessage.server("Sei stato silenziato").toString());
     }
 
     void unmute() {
@@ -156,8 +160,8 @@ public class Command {
 
         MuteManager.unmute(other, user.channel);
         user.net.send(new ResponseMessage().toString());
-        user.net.send(InboundMessage.server("Utente " + other.uname + " non più silenziato").toString());
-        other.net.send(InboundMessage.server("Non sei più silenziato").toString());
+        user.net.send(PrivateInboundMessage.server("Utente " + other.uname + " non più silenziato").toString());
+        other.net.send(PrivateInboundMessage.server("Non sei più silenziato").toString());
     }
 
     public void muteList() {
@@ -171,12 +175,12 @@ public class Command {
             return;
         }
 
-        String[] muted = MuteManager
-                .getMutedUsers(user.channel)
+        String[] muted = Objects.requireNonNull(MuteManager
+                        .getMutedUsers(user.channel))
                 .stream().map(u -> u.uname)
                 .toArray(String[]::new);
 
-        user.net.send(InboundMessage.server(
+        user.net.send(PrivateInboundMessage.server(
                 muted.length == 0
                         ? "Nessun utente silenziato"
                         : (muted.length + " utenti silenziati: " + String.join(", ", muted)
@@ -196,7 +200,7 @@ public class Command {
         }
 
         user.net.send(new ResponseMessage().toString());
-        user.net.send(InboundMessage.server(unames.length + " utenti: " + String.join(", ", unames))
+        user.net.send(PrivateInboundMessage.server(unames.length + " utenti: " + String.join(", ", unames))
                 .toString());
     }
 
@@ -209,7 +213,7 @@ public class Command {
         String[] channels = Channel.getChannels();
         user.net.send(new ResponseMessage().toString());
 
-        user.net.send(InboundMessage.server(
+        user.net.send(PrivateInboundMessage.server(
                 channels.length == 0
                         ? "Nessun canale"
                         : (channels.length + "canali: " + String.join(", ", channels)
@@ -223,7 +227,7 @@ public class Command {
         }
 
         user.net.send(new ResponseMessage().toString());
-        user.net.send(InboundMessage.server(user.channel.isBlank()
+        user.net.send(PrivateInboundMessage.server(user.channel.isBlank()
                 ? "Non sei connesso a nessun canale"
                 : ("Sei connessso a " + user.channel)
         ).toString());

@@ -23,6 +23,13 @@ public class Server {
                 Socket s = ss.accept();
                 ConnectionManager net = new ConnectionManager(s);
                 net.on(UserMessage.class, msg -> {
+                    try {
+                        Integer.parseInt(msg.color, 16);
+                    } catch(NumberFormatException e) {
+                        net.send(new ResponseMessage("Colore non valido").toString());
+                        return;
+                    }
+
                     User user = new User(net, msg.uname, msg.color);
                     user.net.addDisposeRunnable(() -> {
                         Channel.leaveChannel(user);

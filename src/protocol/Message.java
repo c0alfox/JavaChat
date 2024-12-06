@@ -41,15 +41,23 @@ public abstract class Message {
                 return new LeaveMessage(words[0]);
             }
 
-            case 'i':
-            case 'p': {
+            case 'i': {
                 if (words.length < 2) {
                     return new IllformedMessage(payload);
                 }
 
                 return new InboundMessage(words[0],
-                        msgString.substring(msgString.indexOf(' ')),
-                        payload.charAt(0) == 'p'
+                        msgString.substring(msgString.indexOf(' '))
+                );
+            }
+
+            case 'p': {
+                if (words.length < 2) {
+                    return new IllformedMessage(payload);
+                }
+
+                return new PrivateInboundMessage(words[0],
+                        msgString.substring(msgString.indexOf(' '))
                 );
             }
 

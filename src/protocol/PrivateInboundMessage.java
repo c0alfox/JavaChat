@@ -1,10 +1,10 @@
 package protocol;
 
-public class InboundMessage extends Message {
+public class PrivateInboundMessage extends Message {
     public final String uname;
     public final String msg;
 
-    public InboundMessage(String uname, String msg) {
+    public PrivateInboundMessage(String uname, String msg) {
         this.uname = uname;
         this.msg = msg;
     }
@@ -15,6 +15,6 @@ public class InboundMessage extends Message {
 
     @Override
     public String toString() {
-        return "i " + uname + " " + msg;
+        return "p " + uname + " " + msg;
     }
 }
