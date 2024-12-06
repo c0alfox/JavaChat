@@ -1,20 +1,22 @@
 package protocol;
 
-public class PrivateInboundMessage extends Message {
+public class PrivateMessage extends Message {
     public final String uname;
+    public final String color;
     public final String msg;
 
-    public PrivateInboundMessage(String uname, String msg) {
+    public PrivateMessage(String uname, String color, String msg) {
         this.uname = uname;
+        this.color = color;
         this.msg = msg;
     }
 
-    public static InboundMessage server(String msg) {
-        return new InboundMessage("<SERVER>", msg);
+    public static PrivateMessage server(String msg) {
+        return new PrivateMessage("<SERVER>", "000000", msg);
     }
 
     @Override
     public String toString() {
-        return "p " + uname + " " + msg;
+        return "p " + uname + " " + color + " " + msg;
     }
 }

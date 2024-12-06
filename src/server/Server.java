@@ -24,8 +24,10 @@ public class Server {
                 ConnectionManager net = new ConnectionManager(s);
                 net.on(UserMessage.class, msg -> {
                     try {
-                        Integer.parseInt(msg.color, 16);
-                    } catch(NumberFormatException e) {
+                        if (Integer.parseInt(msg.color, 16) > 0xffffff) {
+                            net.send(new ResponseMessage("Colore non valido").toString());
+                        }
+                    } catch (NumberFormatException e) {
                         net.send(new ResponseMessage("Colore non valido").toString());
                         return;
                     }

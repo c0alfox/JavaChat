@@ -1,7 +1,7 @@
 package server;
 
 import protocol.InboundMessage;
-import protocol.PrivateInboundMessage;
+import protocol.PrivateMessage;
 import protocol.ResponseMessage;
 
 import java.util.Hashtable;
@@ -105,7 +105,8 @@ public class Command {
         }
 
         user.net.send(new ResponseMessage().toString());
-        other.net.send(new PrivateInboundMessage(user.uname, msg).toString());
+        user.net.send(PrivateMessage.server("Messaggio inviato con successo").toString());
+        other.net.send(new PrivateMessage(user.uname, user.color, msg).toString());
     }
 
     void mute() {
@@ -132,8 +133,8 @@ public class Command {
 
         MuteManager.mute(other, user.channel);
         user.net.send(new ResponseMessage().toString());
-        user.net.send(PrivateInboundMessage.server("Utente " + other.uname + " silenziato").toString());
-        other.net.send(PrivateInboundMessage.server("Sei stato silenziato").toString());
+        user.net.send(PrivateMessage.server("Utente " + other.uname + " silenziato").toString());
+        other.net.send(PrivateMessage.server("Sei stato silenziato").toString());
     }
 
     void unmute() {
@@ -160,8 +161,8 @@ public class Command {
 
         MuteManager.unmute(other, user.channel);
         user.net.send(new ResponseMessage().toString());
-        user.net.send(PrivateInboundMessage.server("Utente " + other.uname + " non più silenziato").toString());
-        other.net.send(PrivateInboundMessage.server("Non sei più silenziato").toString());
+        user.net.send(PrivateMessage.server("Utente " + other.uname + " non più silenziato").toString());
+        other.net.send(PrivateMessage.server("Non sei più silenziato").toString());
     }
 
     public void muteList() {
@@ -180,7 +181,7 @@ public class Command {
                 .stream().map(u -> u.uname)
                 .toArray(String[]::new);
 
-        user.net.send(PrivateInboundMessage.server(
+        user.net.send(PrivateMessage.server(
                 muted.length == 0
                         ? "Nessun utente silenziato"
                         : (muted.length + " utenti silenziati: " + String.join(", ", muted)
@@ -200,7 +201,7 @@ public class Command {
         }
 
         user.net.send(new ResponseMessage().toString());
-        user.net.send(PrivateInboundMessage.server(unames.length + " utenti: " + String.join(", ", unames))
+        user.net.send(PrivateMessage.server(unames.length + " utenti: " + String.join(", ", unames))
                 .toString());
     }
 
@@ -213,7 +214,7 @@ public class Command {
         String[] channels = Channel.getChannels();
         user.net.send(new ResponseMessage().toString());
 
-        user.net.send(PrivateInboundMessage.server(
+        user.net.send(PrivateMessage.server(
                 channels.length == 0
                         ? "Nessun canale"
                         : (channels.length + "canali: " + String.join(", ", channels)
@@ -227,7 +228,7 @@ public class Command {
         }
 
         user.net.send(new ResponseMessage().toString());
-        user.net.send(PrivateInboundMessage.server(user.channel.isBlank()
+        user.net.send(PrivateMessage.server(user.channel.isBlank()
                 ? "Non sei connesso a nessun canale"
                 : ("Sei connessso a " + user.channel)
         ).toString());

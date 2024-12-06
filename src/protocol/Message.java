@@ -52,13 +52,11 @@ public abstract class Message {
             }
 
             case 'p': {
-                if (words.length < 2) {
+                if (words.length < 3) {
                     return new IllformedMessage(payload);
                 }
 
-                return new PrivateInboundMessage(words[0],
-                        msgString.substring(msgString.indexOf(' '))
-                );
+                return new PrivateMessage(words[0], words[1], (msgString.split(" ", 4))[3]);
             }
 
             case 'o':

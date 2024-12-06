@@ -62,4 +62,16 @@ public class User {
     public static void broadcast(String msg) {
         users.values().forEach(u -> u.net.send(msg));
     }
+
+    public String getUname() {
+        return uname;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
 }
