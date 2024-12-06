@@ -73,7 +73,7 @@ public class Channel {
     }
 
     public static void broadcastMessage(User sender, String msg) {
-        broadcast(sender, new InboundMessage(sender.uname, msg, false));
+        broadcast(sender, new InboundMessage(sender.uname, msg));
     }
 
 

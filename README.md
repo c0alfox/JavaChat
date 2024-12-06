@@ -133,6 +133,7 @@ Pippo ->> Server: c ch
 Pippo ->> Server: c join test
 Server -->> Pippo: r OK
 Server ->> Pippo: p <SERVER> Nessun canale aperto
+Server ->> Pippo: a test
 Server ->> Pippo: j <username> <colore>
 Server ->> Pippo: 
 Server ->> Pippo: 
@@ -205,6 +206,6 @@ Qualora il flusso TCP dovesse terminare per qualunque ragione, l'utente relativo
     - [x] `d` (da delete channel)
 - [ ] misc
     - [x] Implementare un controllo se il colore inviato è un colore valido. Se un utente malevolo dovesse interferire con il protocollo, il server crasherebbe provocando DoS.
-    - [ ] Come implementiamo un messaggio privato da un utente che non è connesso al canale attuale? Da dove prendiamo il suo colore?
+    - [x] Come implementiamo un messaggio privato da un utente che non è connesso al canale attuale? Da dove prendiamo il suo colore?
     - [x] Mute overhaul
     - [ ] Implementare il pannello laterale lato client
