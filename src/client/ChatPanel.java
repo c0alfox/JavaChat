@@ -3,6 +3,7 @@ package client;
 import protocol.InboundMessage;
 import protocol.JoinMessage;
 import protocol.LeaveMessage;
+import protocol.PrivateMessage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,8 +33,13 @@ public class ChatPanel extends JPanel implements UserModelListener {
         setVisible(true);
     }
 
-    public synchronized void onMessage(InboundMessage imsg, Color color) {
-        mlp.addMessage(imsg, color);
+    public synchronized void onMessage(InboundMessage msg, Color color) {
+        mlp.addMessage(msg.msg, msg.uname, color, false);
+        vbar.setValue(vbar.getMaximum());
+    }
+
+    public synchronized void onMessage(PrivateMessage msg) {
+        mlp.addMessage(msg.msg, msg.uname, new Color(Integer.parseInt(msg.color, 16)), true);
         vbar.setValue(vbar.getMaximum());
     }
 
@@ -49,9 +55,16 @@ public class ChatPanel extends JPanel implements UserModelListener {
     public void channelLeft() {
         mlp.clear();
         channel.setText(defaultChannelTitle);
+
+        Client.ui.sideScrollPanel.setViewportView(Client.ui.channelPanel);
+        Client.ui.sidePanelLabel.setText(ClientUI.channelSidePanelLabel);
+        Client.ui.sidePanel.revalidate();
     }
 
     public void channelJoined(String name) {
         channel.setText("#" + name);
+        Client.ui.sideScrollPanel.setViewportView(Client.ui.userPanel);
+        Client.ui.sidePanelLabel.setText(ClientUI.userSidePanelLabel);
+        Client.ui.sidePanel.revalidate();
     }
 }

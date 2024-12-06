@@ -17,6 +17,10 @@ public class Channel {
     }
 
     private synchronized static Channel getChannel(String name) {
+        if (name.isBlank()) {
+            return null;
+        }
+
         if (channels.containsKey(name)) {
             return channels.get(name);
         }
@@ -39,7 +43,7 @@ public class Channel {
     }
 
     public synchronized static void leaveChannel(User user) {
-        if (user.channel.isEmpty()) {
+        if (user.channel.isBlank()) {
             return;
         }
 
@@ -63,6 +67,10 @@ public class Channel {
     }
 
     public synchronized static void broadcast(User sender, Message msg) {
+        if (sender.channel.isBlank()) {
+            return;
+        }
+
         Channel ch = getChannel(sender.channel);
 
         ch.users.forEach(user -> {
@@ -78,13 +86,17 @@ public class Channel {
 
 
     public synchronized static boolean isAdmin(User user) {
+        if (user.channel.isBlank()) {
+            return false;
+        }
+
         Channel ch = getChannel(user.channel);
 
         return ch.users.peek() == user;
     }
 
     public synchronized static String[] getUsernames(String name) {
-        if (name.isEmpty()) {
+        if (name.isBlank()) {
             return null;
         }
 

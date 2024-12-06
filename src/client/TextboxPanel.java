@@ -1,8 +1,8 @@
 package client;
 
 import protocol.CommandMessage;
-import protocol.InboundMessage;
 import protocol.OutboundMessage;
+import protocol.PrivateMessage;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -83,12 +83,12 @@ public class TextboxPanel extends JPanel implements KeyListener, ActionListener 
                     return;
                 }
 
-                parent.onMessage(new InboundMessage("<SERVER>", message, true), null);
+                parent.onMessage(PrivateMessage.server(message));
                 return;
             }
 
             if (!txt.startsWith("/")) {
-                parent.onMessage(new InboundMessage(Client.uname, txt, false), Client.ucolor);
+                parent.onMessage(new PrivateMessage(Client.uname, Client.ucolorstr, txt));
             }
         });
         textField.setText("");

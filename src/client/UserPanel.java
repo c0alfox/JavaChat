@@ -21,7 +21,7 @@ public class UserPanel extends JPanel implements UserModelListener {
         OutlineLabel label = new OutlineLabel(j.uname, JLabel.CENTER);
         label.setForeground(color);
         label.setOutlineColor(ClientUI.borderColor(getBackground()));
-        label.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        label.setFont(new Font("SansSerif", Font.BOLD, 16));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;

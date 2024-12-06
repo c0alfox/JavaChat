@@ -78,9 +78,9 @@ public class Command {
             return;
         }
 
-        Channel.leaveChannel(user);
         user.net.send(new ResponseMessage().toString());
         Channel.broadcast(user.channel, InboundMessage.server(user.uname + " è uscito dal canale"));
+        Channel.leaveChannel(user);
     }
 
     void whisper() {

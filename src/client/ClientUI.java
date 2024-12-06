@@ -7,8 +7,15 @@ import java.awt.*;
 import java.io.IOException;
 
 public class ClientUI extends JFrame {
+    public static final String channelSidePanelLabel = "Canali";
+    public static final String userSidePanelLabel = "Utenti";
+
     public final ChatPanel chatPanel;
     public final UserPanel userPanel;
+    JLabel sidePanelLabel;
+    JPanel sidePanel;
+    JScrollPane sideScrollPanel;
+    public final ChannelPanel channelPanel;
     public final UserModel userModel;
     boolean suspended;
 
@@ -28,12 +35,23 @@ public class ClientUI extends JFrame {
         login();
 
         userPanel = new UserPanel();
+        channelPanel = new ChannelPanel();
         chatPanel = new ChatPanel();
 
         JSplitPane split = new JSplitPane();
-        JScrollPane jsp = new JScrollPane(userPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        jsp.setMinimumSize(new Dimension(260, 0));
-        split.setLeftComponent(jsp);
+        sidePanel = new JPanel();
+        sidePanel.setLayout(new BorderLayout());
+
+        sidePanelLabel = new JLabel(channelSidePanelLabel);
+        sidePanelLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+
+        sideScrollPanel = new JScrollPane(channelPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        sideScrollPanel.setMinimumSize(new Dimension(260, 0));
+
+        sidePanel.add(sidePanelLabel, BorderLayout.NORTH);
+        sidePanel.add(sideScrollPanel, BorderLayout.CENTER);
+
+        split.setLeftComponent(sidePanel);
         split.setRightComponent(chatPanel);
         split.setDividerLocation(1);
 
@@ -87,6 +105,7 @@ public class ClientUI extends JFrame {
                 if (error.isEmpty()) {
                     Client.uname = u.uname;
                     Client.ucolor = new Color(Integer.parseInt(u.color, 16));
+                    Client.ucolorstr = u.color;
                 } else {
                     JOptionPane.showMessageDialog(null, error.get(), "Errore", JOptionPane.ERROR_MESSAGE);
                 }

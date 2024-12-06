@@ -1,7 +1,5 @@
 package client;
 
-import protocol.InboundMessage;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -16,8 +14,8 @@ public class MessageListPanel extends JPanel {
         add(panel, BorderLayout.NORTH);
     }
 
-    public void addMessage(InboundMessage imsg, Color color) {
-        Font font = new Font("SansSerif", Font.PLAIN, 14);
+    public void addMessage(String msg, String uname, Color color, boolean priv) {
+        Font font = new Font("SansSerif", Font.BOLD, 14);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 1;
         gbc.weightx = 1;
@@ -25,7 +23,7 @@ public class MessageListPanel extends JPanel {
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JTextArea jta = new JTextArea(imsg.msg);
+        JTextArea jta = new JTextArea(msg);
         jta.setFont(font);
         jta.setWrapStyleWord(true);
         jta.setLineWrap(true);
@@ -38,14 +36,14 @@ public class MessageListPanel extends JPanel {
         gbc.weightx = 0.2;
         gbc.fill = GridBagConstraints.NONE;
 
-        String suffix = imsg.isPrivate ? " [whisper]" : "";
+        String suffix = priv ? " [whisper]" : "";
 
         if (color == null) {
-            JLabel label = new JLabel(imsg.uname + suffix);
+            JLabel label = new JLabel(uname + suffix);
             label.setFont(font);
             panel.add(label, gbc);
         } else {
-            OutlineLabel label = new OutlineLabel(imsg.uname + suffix);
+            OutlineLabel label = new OutlineLabel(uname + suffix);
             label.setFont(font);
             label.setForeground(color);
             label.setOutlineColor(ClientUI.borderColor(getBackground()));
