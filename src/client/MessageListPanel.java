@@ -32,6 +32,7 @@ public class MessageListPanel extends JPanel {
         jta.setLineWrap(true);
         jta.setEditable(false);
         jta.setBackground(panel.getBackground());
+        panel.add(jta, gbc);
 
         gbc.gridx = 0;
         gbc.weightx = 0.2;

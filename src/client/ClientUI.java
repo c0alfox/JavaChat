@@ -26,7 +26,8 @@ public class ClientUI extends JFrame {
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(800, 600);
-        setMinimumSize(new Dimension(400, 300));
+        setResizable(false);
+        // setMinimumSize(new Dimension(600, 400));
         setLocationRelativeTo(null);
 
         suspended = false;
