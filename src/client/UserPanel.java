@@ -11,7 +11,6 @@ public class UserPanel extends JPanel implements UserModelListener {
 
     public UserPanel() {
         panel.setLayout(new GridBagLayout());
-        setMinimumSize(new Dimension(260, 0));
 
         setLayout(new BorderLayout());
         add(panel, BorderLayout.NORTH);

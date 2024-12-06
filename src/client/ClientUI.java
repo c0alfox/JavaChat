@@ -31,7 +31,9 @@ public class ClientUI extends JFrame {
         chatPanel = new ChatPanel();
 
         JSplitPane split = new JSplitPane();
-        split.setLeftComponent(new JScrollPane(userPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
+        JScrollPane jsp = new JScrollPane(userPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        jsp.setMinimumSize(new Dimension(260, 0));
+        split.setLeftComponent(jsp);
         split.setRightComponent(chatPanel);
         split.setDividerLocation(1);
 

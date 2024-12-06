@@ -3,10 +3,38 @@ package server;
 import protocol.InboundMessage;
 import protocol.ResponseMessage;
 
+import java.util.Hashtable;
+import java.util.function.Consumer;
+
 public class Command {
-    final String cmd;
-    final String[] parts;
-    final User user;
+    private static final Hashtable<String, Consumer<Command>> commandBindings = new Hashtable<>() {{
+        put("j", Command::join);
+        put("join", Command::join);
+
+        put("l", Command::leave);
+        put("leave", Command::leave);
+
+        put("whisper", Command::whisper);
+        put("w", Command::whisper);
+
+        put("mute", Command::mute);
+        put("m", Command::mute);
+
+        put("unmute", Command::unmute);
+
+        put("channels", Command::channels);
+        put("ch", Command::channels);
+
+        put("mychannel", Command::myChannel);
+
+        put("users", Command::users);
+
+        put("quit", Command::exit);
+        put("exit", Command::exit);
+    }};
+    public final String cmd;
+    public final String[] parts;
+    public final User user;
 
     public Command(User user, String cmd) {
         this.user = user;
@@ -14,14 +42,8 @@ public class Command {
         parts = cmd.split("[ \t]");
     }
 
-    void runJoin(String channel) {
-        Channel.joinChannel(channel, user);
-        user.net.send(new ResponseMessage("OK " + parts[1]).toString());
-    }
-
-    void runLeave() {
-        Channel.leaveChannel(user);
-        user.net.send(new ResponseMessage().toString());
+    void syntaxError() {
+        user.net.send(new ResponseMessage("Errore di sintassi del comando").toString());
     }
 
     User getUserInChannel(String uname) {
@@ -35,9 +57,43 @@ public class Command {
         return other;
     }
 
-    void runWhisper(String uname, String msg) {
+    void join() {
+        if (parts.length != 2) {
+            syntaxError();
+            return;
+        }
+
+        Channel.joinChannel(parts[1], user);
+        user.net.send(new ResponseMessage("OK " + parts[1]).toString());
+    }
+
+    void leave() {
+        if (parts.length != 1) {
+            syntaxError();
+            return;
+        }
+
+        Channel.leaveChannel(user);
+        user.net.send(new ResponseMessage().toString());
+    }
+
+    void whisper() {
+        if (parts.length <= 2) {
+            syntaxError();
+            return;
+        }
+
+        String[] p = cmd.split("[ \t]", 3);
+        String uname = p[0];
+        String msg = p[1];
+
+        if (uname.equals(user.uname)) {
+            user.net.send(new ResponseMessage("Non puoi sussurrare a te stesso").toString());
+            return;
+        }
+
         User other;
-        if ((other = getUserInChannel(uname)) == null) {
+        if ((other = User.getUser(uname)) == null) {
             user.net.send(new ResponseMessage("Utente inesistente").toString());
             return;
         }
@@ -46,37 +102,64 @@ public class Command {
         other.net.send(new InboundMessage(user.uname, msg, true).toString());
     }
 
-    void runMute(String uname) {
-        User other;
-        if ((other = getUserInChannel(uname)) == null) {
-            user.net.send(new ResponseMessage("Utente inesistente").toString());
+    void mute() {
+        if (parts.length != 2) {
+            syntaxError();
             return;
         }
 
         if (!Channel.isAdmin(user)) {
             user.net.send(new ResponseMessage("Non sei amministratore del canale").toString());
+            return;
+        }
+
+        if (parts[1].equals(user.uname)) {
+            user.net.send(new ResponseMessage("Non puoi silenziare te stesso").toString());
+            return;
+        }
+
+        User other;
+        if ((other = getUserInChannel(parts[1])) == null) {
+            user.net.send(new ResponseMessage("Utente non connesso al canale").toString());
+            return;
         }
 
         other.muted = true;
         user.net.send(new ResponseMessage().toString());
     }
 
-    void runUnmute(String uname) {
-        User other;
-        if ((other = getUserInChannel(uname)) == null) {
-            user.net.send(new ResponseMessage("Utente inesistente").toString());
+    void unmute() {
+        if (parts.length != 2) {
+            syntaxError();
             return;
         }
 
         if (!Channel.isAdmin(user)) {
             user.net.send(new ResponseMessage("Non sei amministratore del canale").toString());
+            return;
+        }
+
+        if (parts[1].equals(user.uname)) {
+            user.net.send(new ResponseMessage("Non puoi togliere il silenzioso a te stesso").toString());
+            return;
+        }
+
+        User other;
+        if ((other = getUserInChannel(parts[1])) == null) {
+            user.net.send(new ResponseMessage("Utente non connesso al canale").toString());
+            return;
         }
 
         other.muted = false;
         user.net.send(new ResponseMessage().toString());
     }
 
-    public void runUsers() {
+    public void users() {
+        if (parts.length != 1) {
+            syntaxError();
+            return;
+        }
+
         String[] unames = Channel.getUsernames(user.channel);
         if (unames == null) {
             user.net.send(new ResponseMessage("Non sei in un canale").toString());
@@ -88,7 +171,12 @@ public class Command {
                 .toString());
     }
 
-    public void runChannels() {
+    public void channels() {
+        if (parts.length != 1) {
+            syntaxError();
+            return;
+        }
+
         String[] channels = Channel.getChannels();
         user.net.send(new ResponseMessage().toString());
 
@@ -99,27 +187,36 @@ public class Command {
                 )).toString());
     }
 
-    public void run() {
-        if (parts.length == 2 && (parts[0].equals("j") || parts[0].equals("join"))) {
-            runJoin(parts[1]);
-        } else if (parts.length == 1 && (parts[0].equals("l") || parts[0].equals("leave"))) {
-            runLeave();
-        } else if (parts.length > 2 && (parts[0].equals("w") || parts[0].equals("whisper"))) {
-            String[] newParts = cmd.split("[ \t]", 3);
-            runWhisper(parts[1], newParts[2]);
-        } else if (parts.length == 2 && (parts[0].equals("m") || parts[0].equals("mute"))) {
-            runMute(parts[1]);
-        } else if (parts.length == 2 && parts[0].equals("unmute")) {
-            runUnmute(parts[1]);
-        } else if (parts.length == 1 && parts[0].equals("users")) {
-            runUsers();
-        } else if (parts.length == 1 && (parts[0].equals("ch") || parts[0].equals("channels"))) {
-            runChannels();
-        } else if (parts.length == 1 && parts[0].equals("exit")) {
-            user.net.send(new ResponseMessage("QUIT").toString());
-        } else {
-            user.net.send(new ResponseMessage("Errore di sintassi del comando").toString());
+    public void myChannel() {
+        if (parts.length != 1) {
+            syntaxError();
+            return;
         }
 
+        user.net.send(new ResponseMessage().toString());
+        user.net.send(InboundMessage.server(user.channel.isBlank()
+                ? "Non sei connesso a nessun canale"
+                : ("Sei connessso a " + user.channel)
+        ).toString());
+    }
+
+    public void exit() {
+        if (parts.length != 1) {
+            syntaxError();
+            return;
+        }
+
+        user.net.send(new ResponseMessage("QUIT").toString());
+    }
+
+    public void run() {
+        Consumer<Command> func = commandBindings.get(parts[0]);
+
+        if (func == null) {
+            user.net.send(new ResponseMessage("Comando Inesistente").toString());
+            return;
+        }
+
+        func.accept(this);
     }
 }
