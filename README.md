@@ -187,23 +187,24 @@ Qualora il flusso TCP dovesse terminare per qualunque ragione, l'utente relativo
 
 # Todo
 
-- [ ] [Comandi utente](#comandi-utente)
+- [x] [Comandi utente](#comandi-utente)
     - [x] `/w`
     - [x] `/j`
     - [x] `/l`
     - [x] `/ch`
     - [x] `/exit`
-- [ ] [Comandi canale](#comandi-canale)
-	- [ ] `/mychannel`
-- [ ] [Comandi per amministratori](#comandi-per-amministratori)
-	- [ ] `/mute`
-	- [ ] `/m`
-	- [ ] `/unmute`
-	- [ ] `/mutelist`
-- [ ] [Protocollo di connessione](#protocollo-di-connessione)
-    - [ ] `a` (da add channel)
-    - [ ] `d` (da delete channel)
+- [x] [Comandi canale](#comandi-canale)
+	- [x] `/mychannel`
+- [x] [Comandi per amministratori](#comandi-per-amministratori)
+	- [x] `/mute`
+	- [x] `/m`
+	- [x] `/unmute`
+	- [x] `/mutelist`
+- [x] [Protocollo di connessione](#protocollo-di-connessione)
+    - [x] `a` (da add channel)
+    - [x] `d` (da delete channel)
 - [ ] misc
     - [x] Implementare un controllo se il colore inviato è un colore valido. Se un utente malevolo dovesse interferire con il protocollo, il server crasherebbe provocando DoS.
     - [ ] Come implementiamo un messaggio privato da un utente che non è connesso al canale attuale? Da dove prendiamo il suo colore?
-    - [ ] Mute overhaul
+    - [x] Mute overhaul
+    - [ ] Implementare il pannello laterale lato client

@@ -1,9 +1,6 @@
 package server;
 
-import protocol.InboundMessage;
-import protocol.JoinMessage;
-import protocol.LeaveMessage;
-import protocol.Message;
+import protocol.*;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -11,7 +8,7 @@ import java.util.Queue;
 
 public class Channel {
     private static final HashMap<String, Channel> channels = new HashMap<>();
-    private final String name;
+    public final String name;
     private final Queue<User> users;
 
     private Channel(String name) {
@@ -25,7 +22,7 @@ public class Channel {
         }
 
         Channel ret = new Channel(name);
-        channels.put(name, ret);
+        addChannel(ret);
         return ret;
     }
 
@@ -53,11 +50,10 @@ public class Channel {
         broadcast(user.channel, new LeaveMessage(user.uname));
 
         if (ch.users.isEmpty()) {
-            channels.remove(user.channel, ch);
+            removeChannel(ch);
         }
 
-        user.channel = " ";
-        user.muted = false;
+        user.channel = "";
     }
 
     public synchronized static void broadcast(String name, Message msg) {
@@ -102,5 +98,19 @@ public class Channel {
         return channels
                 .keySet()
                 .toArray(String[]::new);
+    }
+
+    private synchronized static void addChannel(Channel c) {
+        channels.put(c.name, c);
+        User.broadcast(new AddChannelMessage(c.name).toString());
+    }
+
+    private synchronized static void removeChannel(Channel c) {
+        channels.remove(c.name, c);
+        User.broadcast(new DeleteChannelMessage(c.name).toString());
+    }
+
+    public synchronized static void newUser(User user) {
+        channels.values().forEach(channel -> user.net.send(new AddChannelMessage(channel.name).toString()));
     }
 }

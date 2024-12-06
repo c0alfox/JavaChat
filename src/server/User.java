@@ -10,7 +10,6 @@ import java.util.HashMap;
 public class User {
     static final HashMap<String, User> users = new HashMap<>();
     final ConnectionManager net;
-    public boolean muted = false;
     String channel = "", uname, color;
 
     public User(ConnectionManager net, String uname, String color) {
@@ -31,8 +30,8 @@ public class User {
         }
 
         user.net.on(OutboundMessage.class, msg -> {
-            if (user.muted) {
-                user.net.send(new ResponseMessage("Sei stato mutato").toString());
+            if (MuteManager.isMuted(user, user.channel)) {
+                user.net.send(new ResponseMessage("Sei stato silenziato").toString());
                 return;
             }
 
@@ -46,6 +45,7 @@ public class User {
             user.net.send(new ResponseMessage("Non in un canale").toString());
         }).on(CommandMessage.class, msg -> new Command(user, msg.cmd).run());
 
+        Channel.newUser(user);
         user.net.send(new ResponseMessage().toString());
         users.put(user.uname, user);
     }
@@ -57,5 +57,9 @@ public class User {
 
     public static synchronized User getUser(String username) {
         return users.get(username);
+    }
+
+    public static void broadcast(String msg) {
+        users.values().forEach(u -> u.net.send(msg));
     }
 }

@@ -22,6 +22,8 @@ public class Command {
 
         put("unmute", Command::unmute);
 
+        put("mutelist", Command::muteList);
+
         put("channels", Command::channels);
         put("ch", Command::channels);
 
@@ -124,8 +126,10 @@ public class Command {
             return;
         }
 
-        other.muted = true;
+        MuteManager.mute(other, user.channel);
         user.net.send(new ResponseMessage().toString());
+        user.net.send(InboundMessage.server("Utente " + other.uname + " silenziato").toString());
+        other.net.send(InboundMessage.server("Sei stato silenziato").toString());
     }
 
     void unmute() {
@@ -150,8 +154,33 @@ public class Command {
             return;
         }
 
-        other.muted = false;
+        MuteManager.unmute(other, user.channel);
         user.net.send(new ResponseMessage().toString());
+        user.net.send(InboundMessage.server("Utente " + other.uname + " non più silenziato").toString());
+        other.net.send(InboundMessage.server("Non sei più silenziato").toString());
+    }
+
+    public void muteList() {
+        if (parts.length != 1) {
+            syntaxError();
+            return;
+        }
+
+        if (!Channel.isAdmin(user)) {
+            user.net.send(new ResponseMessage("Non sei amministratore del canale").toString());
+            return;
+        }
+
+        String[] muted = MuteManager
+                .getMutedUsers(user.channel)
+                .stream().map(u -> u.uname)
+                .toArray(String[]::new);
+
+        user.net.send(InboundMessage.server(
+                muted.length == 0
+                        ? "Nessun utente silenziato"
+                        : (muted.length + " utenti silenziati: " + String.join(", ", muted)
+                )).toString());
     }
 
     public void users() {
@@ -167,7 +196,7 @@ public class Command {
         }
 
         user.net.send(new ResponseMessage().toString());
-        user.net.send(InboundMessage.server(unames.length + "utenti: " + String.join(", ", unames))
+        user.net.send(InboundMessage.server(unames.length + " utenti: " + String.join(", ", unames))
                 .toString());
     }
 
