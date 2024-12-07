@@ -21,10 +21,6 @@ public class MuteManager {
             return;
         }
 
-        if (!user2Channel.contains(user)) {
-            return;
-        }
-
         if (user2Channel.containsKey(user)) {
             user2Channel.get(user).remove(channel);
         }
